@@ -11,7 +11,8 @@ module.exports = {
   plugins: [new HtmlWebpackPlugin({
     hash: true,
     title: 'ToDo List',
-    template: './src/index.html'
+    template: './src/index.html',
+    favicon: './src/assets/images/favicon.ico'
 })],
   output: {
     filename: '[name].bundle.js',

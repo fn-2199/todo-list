@@ -1,3 +1,11 @@
+:root {
+    --dark-color: #151515;
+    --light-color: #fefefe;
+    --text-color: #ddddbb;
+    --main-color: #f39333;
+    --secondary-color: #e46404;
+}
+
 header {
     display: flex;
     align-items: center;

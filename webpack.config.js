@@ -10,7 +10,7 @@ module.exports = {
   },
   plugins: [new HtmlWebpackPlugin({
     hash: true,
-    title: 'ToDo List',
+    title: "ThingsToDo",
     template: './src/index.html',
     favicon: './src/assets/images/favicon.ico'
 })],

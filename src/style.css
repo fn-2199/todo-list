@@ -1,15 +1,33 @@
-:root {
-    --dark-color: #151515;
-    --light-color: #fefefe;
-    --text-color: #ddddbb;
-    --main-color: #f39333;
-    --secondary-color: #e46404;
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+body,
+h1 {
+    margin: 0;
+    padding: 0;
 }
 
+body {
+    font-family: 'Inter', sans-serif;
+    background: white;
+}
+
+:root {
+    --dark-color: #002447;
+    --light-color: #FBECEB;
+    --main-color: #FEB249;
+    --second-color: #53D3D1; 
+}
 header {
     display: flex;
-    align-items: center;
-    gap: 15px;
+    justify-content: center;
+    font-family: 'Inter', 'sans-serif';
+    font-size: 2rem;
+    background: var(--dark-color);
+    color: white;
+}
+
+h1 {
+    padding: 10px;
 }
 
 img {

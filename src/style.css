@@ -8,14 +8,16 @@ h1 {
 
 body {
     font-family: 'Inter', sans-serif;
-    background: white;
+    background: var(--light-color);
 }
 
 :root {
     --dark-color: #002447;
-    --light-color: #FBECEB;
+    --light-color: #FFFFFF;
     --main-color: #FEB249;
-    --second-color: #53D3D1; 
+    --light-grey: #EEEEEE;
+    --medium-grey: #BBBBBB;
+    --dark-grey: #888888;
 }
 header {
     display: flex;
@@ -30,6 +32,7 @@ header {
 
 .material-icons-round.md-36 {
     font-size: 36px;
+    cursor: pointer;
 }
 
 h1 {

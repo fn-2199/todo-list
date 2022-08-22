@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
 body,
-h1 {
+h1,
+h2,
+p {
     margin: 0;
     padding: 0;
 }
@@ -48,23 +50,47 @@ h1 {
     padding: 10px;
 }
 
-img {
-    height: 25px;
-    width: auto;
-}
-
 nav {
-    background-color: var(--medium-grey);
+    background-color: var(--light-grey);
     grid-row: 2/-1;
     grid-column: 1/2;
+    padding: 25px;
 }
 
 main {
-    background: var(--dark-grey);
+    background: var(--light-color);
     grid-row: 2/-1;
     grid-column: 2/-1;
 }
 
-.stretch {
+body.collapse nav {
+    transform: translateX(-100%);
+}
+
+body.collapse main {
     grid-column: 1/-1;
+}
+
+div#home h2,
+div#projects h2 {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--dark-grey);
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 5px;
+    cursor: pointer;
+}
+
+#projects {
+    margin-top: 40px;
+}
+
+.tab:hover {
+    background: var(--medium-grey);
+    border-radius: 5px;
 }

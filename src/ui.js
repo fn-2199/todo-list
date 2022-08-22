@@ -1,33 +1,49 @@
 import './style.css';
 
+const CATEGORY = [{category: 'Home', subcategory: [{title: 'Inbox', icon: 'inbox'}, {title:'Today', icon: 'today'}, {title: 'Upcoming', icon: 'date_range'}]}, {category: 'Projects', subcategory: [{title: 'Add Projects', icon: 'add'}]}];
+
 export default function generateUI() {
     const header = document.createElement('header');
     const h1 = document.createElement('h1');
     h1.textContent = document.title;
 
     const menuImg = document.createElement('span');
-    menuImg.classList.add('material-icons-round');
-    menuImg.classList.add('md-36');
+    menuImg.classList.add('material-icons-round', 'md-36');
     menuImg.textContent = 'menu';
     menuImg.onclick = function() {
-        if (menu.hasAttribute("hidden")) {
-            menu.removeAttribute('hidden');
-            main.classList.toggle('stretch');
-        } else {
-            menu.setAttribute('hidden', '');
-            main.classList.toggle('stretch');
-        }
+        document.body.classList.toggle('collapse');
     }
 
     const addImg = document.createElement('span');
-    addImg.classList.add('material-icons-round');
-    addImg.classList.add('md-36');
+    addImg.classList.add('material-icons-round', 'md-36');
     addImg.textContent = 'add';
 
     const main = document.createElement('main');
-    main.textContent = 'This is the main'
     const menu = document.createElement('nav');
-    menu.textContent = 'This is the menu.'
+
+    CATEGORY.forEach((cat) => {
+        const catContainer = document.createElement('div');
+        catContainer.id = cat.category.toLowerCase();
+        menu.appendChild(catContainer);
+        const catName = document.createElement('h2');
+        catName.textContent = cat.category;
+        catContainer.appendChild(catName);
+
+        for (let tab of cat.subcategory) {
+            const tabKey = document.createElement('div');
+            tabKey.classList.add('tab');
+
+            const tabName = document.createElement('p');
+            tabName.textContent = tab.title;
+
+            const tabIcon = document.createElement('span');
+            tabIcon.classList.add('material-icons-round');
+            tabIcon.textContent = tab.icon;
+
+            tabKey.append(tabIcon, tabName);
+            catContainer.appendChild(tabKey);
+        }
+    })
 
     header.append(menuImg, h1, addImg);
     document.body.append(header, menu, main);

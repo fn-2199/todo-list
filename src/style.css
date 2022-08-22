@@ -6,9 +6,17 @@ h1 {
     padding: 0;
 }
 
+html,
+body {
+    height: 100%;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     background: var(--light-color);
+    display: grid;
+    grid-template-rows: 6rem 1fr;
+    grid-template-columns: 18rem 1fr;
 }
 
 :root {
@@ -23,11 +31,12 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: 'Inter', 'sans-serif';
     font-size: 1.5rem;
     background: var(--dark-color);
     color: white;
     padding: 0 20px;
+    grid-column: 1/-1;
+    grid-row: 1/2;
 }
 
 .material-icons-round.md-36 {
@@ -42,4 +51,20 @@ h1 {
 img {
     height: 25px;
     width: auto;
+}
+
+nav {
+    background-color: var(--medium-grey);
+    grid-row: 2/-1;
+    grid-column: 1/2;
+}
+
+main {
+    background: var(--dark-grey);
+    grid-row: 2/-1;
+    grid-column: 2/-1;
+}
+
+.stretch {
+    grid-column: 1/-1;
 }

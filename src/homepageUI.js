@@ -1,6 +1,14 @@
 import './style.css';
 
-const CATEGORY = [{category: 'Home', subcategory: [{title: 'Inbox', icon: 'inbox'}, {title:'Today', icon: 'today'}, {title: 'Upcoming', icon: 'date_range'}]}, {category: 'Projects', subcategory: [{title: 'Add Projects', icon: 'add'}]}];
+//Factory function for tab creation
+const pages = (title, icon, link) => {
+    return {title, icon, link};
+}
+
+const homePagesArray = [pages('Inbox', 'inbox', ''), pages('Today', 'today', ''), pages('Upcoming', 'date_range', '')];
+let projectsPagesArray = [pages('Add Projects', 'add', '')];
+
+const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
 
 export default function generateHomepage() {
     const header = document.createElement('header');
@@ -21,6 +29,7 @@ export default function generateHomepage() {
     const main = document.createElement('main');
     const menu = document.createElement('nav');
 
+    // Generate Nav/Sidebar Content
     CATEGORY.forEach((cat) => {
         const catContainer = document.createElement('div');
         catContainer.id = cat.category.toLowerCase();

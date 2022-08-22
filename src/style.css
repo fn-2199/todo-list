@@ -92,5 +92,5 @@ div#projects h2 {
 
 .tab:hover {
     background: var(--medium-grey);
-    border-radius: 5px;
+    border-radius: 10px;
 }

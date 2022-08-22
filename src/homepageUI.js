@@ -2,7 +2,7 @@ import './style.css';
 
 const CATEGORY = [{category: 'Home', subcategory: [{title: 'Inbox', icon: 'inbox'}, {title:'Today', icon: 'today'}, {title: 'Upcoming', icon: 'date_range'}]}, {category: 'Projects', subcategory: [{title: 'Add Projects', icon: 'add'}]}];
 
-export default function generateUI() {
+export default function generateHomepage() {
     const header = document.createElement('header');
     const h1 = document.createElement('h1');
     h1.textContent = document.title;

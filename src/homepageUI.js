@@ -3,6 +3,7 @@ import todayUI from './todayUI';
 import projectUI from './projectUI';
 import upcomingUI from './upcomingUI';
 import inboxUI from './inboxUI';
+import modalsUI from './modalsUI';
 
 // Factory Function for Tab Creation
 const pages = (title, icon, link) => {
@@ -14,12 +15,12 @@ const toggleNav = function() {
 }
 
 const addTask = function() {
-    console.log('Add Task has been selected');
+    document.querySelector('.modal').classList.add('show-modal');
 }
 
 // Arrays
 const homePagesArray = [pages('Inbox', 'inbox', inboxUI), pages('Today', 'today', todayUI), pages('Upcoming', 'date_range', upcomingUI)];
-let projectsPagesArray = [pages('Add Projects', 'add', '')];
+let projectsPagesArray = [];
 const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
 const headerArray = [pages('', 'menu', toggleNav), pages('', 'add', addTask)];
 
@@ -49,6 +50,7 @@ export default function generateHomepage() {
         const catContainer = document.createElement('div');
         catContainer.id = cat.category.toLowerCase();
         menu.appendChild(catContainer);
+
         const catName = document.createElement('h2');
         catName.textContent = cat.category;
         catContainer.appendChild(catName);
@@ -64,23 +66,29 @@ export default function generateHomepage() {
             tabIcon.classList.add('material-icons-round');
             tabIcon.textContent = tab.icon;
 
-            tabKey.append(tabIcon, tabName);
-
-            if (cat.category == 'Home') {
-                tabKey.onclick = function() {
-                    document.querySelector('main').textContent = '';
-                    document.querySelector('main').appendChild(tab.link());
-                }
+            tabKey.onclick = function() {
+                document.querySelector('main').textContent = '';
+                document.querySelector('main').appendChild(tab.link());
             }
 
+            tabKey.append(tabIcon, tabName);
             catContainer.appendChild(tabKey);
         }
     })
-    
-    document.body.append(header, menu, main);
-};
 
-// function activatePage(link) {
-//     document.getElementsByTagName('main').textContent = '';
-//     document.getElementsByTagName('main').appendChild(window[`${link}`]());
-// }
+    // Generate Add Project Button
+    const addProjBtn = document.createElement('div');
+    addProjBtn.classList.add('tab');
+
+    const btnName = document.createElement('p');
+    btnName.textContent = "Add Project";
+
+    const btnIcon = document.createElement('span');
+    btnIcon.classList.add('material-icons-round');
+    btnIcon.textContent = 'add';
+
+    addProjBtn.append(btnIcon, btnName);
+    menu.appendChild(addProjBtn);
+
+    document.body.append(header, menu, main, modalsUI());
+};

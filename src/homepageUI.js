@@ -20,7 +20,7 @@ const addTask = function() {
 
 // Arrays
 const homePagesArray = [pages('Inbox', 'inbox', inboxUI), pages('Today', 'today', todayUI), pages('Upcoming', 'date_range', upcomingUI)];
-let projectsPagesArray = [];
+let projectsPagesArray = [pages('Add Projects', 'add', addTask)];
 const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
 const headerArray = [pages('', 'menu', toggleNav), pages('', 'add', addTask)];
 
@@ -47,7 +47,7 @@ export default function generateHomepage() {
 
     // Generate Nav/Sidebar Content
     CATEGORY.forEach((cat) => {
-        const catContainer = document.createElement('div');
+        const catContainer = document.createElement('ul');
         catContainer.id = cat.category.toLowerCase();
         menu.appendChild(catContainer);
 
@@ -56,7 +56,7 @@ export default function generateHomepage() {
         catContainer.appendChild(catName);
 
         for (let tab of cat.subcategory) {
-            const tabKey = document.createElement('div');
+            const tabKey = document.createElement('li');
             tabKey.classList.add('tab');
 
             const tabName = document.createElement('p');
@@ -75,20 +75,6 @@ export default function generateHomepage() {
             catContainer.appendChild(tabKey);
         }
     })
-
-    // Generate Add Project Button
-    const addProjBtn = document.createElement('div');
-    addProjBtn.classList.add('tab');
-
-    const btnName = document.createElement('p');
-    btnName.textContent = "Add Project";
-
-    const btnIcon = document.createElement('span');
-    btnIcon.classList.add('material-icons-round');
-    btnIcon.textContent = 'add';
-
-    addProjBtn.append(btnIcon, btnName);
-    menu.appendChild(addProjBtn);
 
     document.body.append(header, menu, main, modalsUI());
 };

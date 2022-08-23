@@ -3,7 +3,9 @@
 body,
 h1,
 h2,
-p {
+p,
+ul,
+li {
     margin: 0;
     padding: 0;
 }
@@ -43,7 +45,6 @@ header {
 
 .material-icons-round.md-36 {
     font-size: 36px;
-    cursor: pointer;
 }
 
 h1 {
@@ -71,8 +72,8 @@ body.collapse main {
     grid-column: 1/-1;
 }
 
-div#home h2,
-div#projects h2 {
+#home h2,
+#projects h2 {
     padding-bottom: 10px;
     margin-bottom: 10px;
     border-bottom: 2px solid var(--dark-grey);
@@ -83,7 +84,6 @@ div#projects h2 {
     align-items: center;
     gap: 5px;
     padding: 8px 5px;
-    cursor: pointer;
 }
 
 #projects {
@@ -96,10 +96,21 @@ div#projects h2 {
     border-radius: 10px;
 }
 
-/* MODALS */
+ul {
+    list-style: none;
+}
 
+.material-icons-round.md-36,
+.tab,
+button,
+.close-button {
+    cursor: pointer;
+}
+
+/* MODALS */
 .modal {
     position: fixed;
+    z-index: 1;
     left: 0;
     top: 0;
     width: 100%;
@@ -141,4 +152,15 @@ div#projects h2 {
     visibility: visible;
     transform: scale(1.0);
     transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+/* Modal Form */
+
+button {
+    background: none;
+    border: none;
+    display: block;
+    padding: 0;
+    margin: 0 auto;
+    font-family: inherit;
 }

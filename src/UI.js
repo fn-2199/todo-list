@@ -13,11 +13,18 @@ const addTask = function() {
     document.querySelector('.modal').classList.add('show-modal');
 }
 
+const formElements = (camelCase, stringLabel, inputType) => {
+    return {camelCase, stringLabel, inputType}
+}
+
 // Arrays
-const homePagesArray = [pages('Inbox', 'inbox', inboxUI), pages('Today', 'today', todayUI), pages('Upcoming', 'date_range', upcomingUI)];
+const homePagesArray = [pages('Inbox', 'inbox', ''), pages('Today', 'today', ''), pages('Upcoming', 'date_range', '')];
 let projectsPagesArray = [pages('Add Projects', 'add', addTask)];
 const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
 const headerArray = [pages('', 'menu', toggleNav), pages('', 'add', addTask)];
+
+const newTaskArray = [formElements('taskTitle', 'Title', 'text'), formElements('dueDate', 'Due Date', 'datetime-local'), formElements('priority', 'Priority', 'radio')];
+const newProject = [formElements('name', 'Name', 'text')];
 
 
 export default function generateHomepage() {
@@ -71,15 +78,9 @@ export default function generateHomepage() {
         }
     })
 
-    document.body.append(header, menu, main, modalsUI());
+    document.body.append(header, menu, main, generateModal());
 
     // Generate Modal
-    const formElements = (camelCase, stringLabel, inputType) => {
-        return {camelCase, stringLabel, inputType}
-    }
-    
-    const newTaskArray = [formElements('taskTitle', 'Title', 'text'), formElements('dueDate', 'Due Date', 'datetime-local'), formElements('priority', 'Priority', 'radio')];
-    const newProject = [formElements('name', 'Name', 'text')];
     
     function generateModal() {
         const modalBg = document.createElement('div');
@@ -122,5 +123,7 @@ export default function generateHomepage() {
     
         modalContainer.append(exitBtn, modalForm);
         modalBg.append(modalContainer);
+
+        return modalBg;
     }
 };

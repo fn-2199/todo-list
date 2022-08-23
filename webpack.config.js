@@ -11,7 +11,7 @@ module.exports = {
   plugins: [new HtmlWebpackPlugin({
     hash: true,
     title: "ThingsToDo",
-    template: './src/index.html',
+    template: './src/template.html',
     favicon: './src/assets/images/favicon.ico'
 })],
   output: {

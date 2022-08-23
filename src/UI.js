@@ -5,6 +5,11 @@ const pages = (title, icon, link) => {
     return {title, icon, link};
 }
 
+// Factory Function for Form Elements
+const formElements = (camelCase, stringLabel, inputType) => {
+    return {camelCase, stringLabel, inputType}
+}
+
 const toggleNav = function() {
     document.body.classList.toggle('collapse');
 }
@@ -12,22 +17,18 @@ const toggleNav = function() {
 const addTask = function() {
     document.querySelector('.modal').classList.add('show-modal');
 }
-
-const formElements = (camelCase, stringLabel, inputType) => {
-    return {camelCase, stringLabel, inputType}
-}
-
 // Arrays
 const homePagesArray = [pages('Inbox', 'inbox', ''), pages('Today', 'today', ''), pages('Upcoming', 'date_range', '')];
 let projectsPagesArray = [pages('Add Projects', 'add', addTask)];
 const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
 const headerArray = [pages('', 'menu', toggleNav), pages('', 'add', addTask)];
 
+// Modal Form Arrays
 const newTaskArray = [formElements('taskTitle', 'Title', 'text'), formElements('dueDate', 'Due Date', 'datetime-local'), formElements('priority', 'Priority', 'radio')];
 const newProject = [formElements('name', 'Name', 'text')];
 
 
-export default function generateHomepage() {
+export default function generateUI() {
 
     // Generate Header
     const header = document.createElement('header');
@@ -78,52 +79,47 @@ export default function generateHomepage() {
         }
     })
 
-    document.body.append(header, menu, main, generateModal());
-
     // Generate Modal
-    
-    function generateModal() {
-        const modalBg = document.createElement('div');
-        modalBg.classList.add('modal');
-    
-        const modalContainer = document.createElement('div');
-        modalContainer.classList.add('modal-content');
-    
-        const exitBtn = document.createElement('span');
-        exitBtn.classList.add('close-button');
-        exitBtn.textContent = '×';
-    
-        const modalForm = document.createElement('form');
-        const formTitle = document.createElement('h2');
-    
-        formTitle.textContent = "Add New Project";
-        modalForm.append(formTitle);
-    
-        for (let element of newProject) {
-            const label = document.createElement('label');
-            label.textContent = element.stringLabel;
-    
-            const input = document.createElement('input');
-            input.setAttribute('required', '');
-            input.type = element.inputType;
-            input.name = element.camelCase;
-    
-            label.appendChild(input);
-            modalForm.append(label);
-        }
-    
-        const submitBtn = document.createElement('button');
-        submitBtn.textContent = "Add Project"
-    
-        modalForm.appendChild(submitBtn);
-    
-        exitBtn.addEventListener("click", closeModal);
-        window.addEventListener("click", function(e) {if(e.target == modalBg) closeModal()})
-        function closeModal() {modalBg.classList.remove("show-modal")};
-    
-        modalContainer.append(exitBtn, modalForm);
-        modalBg.append(modalContainer);
+    const modalBg = document.createElement('div');
+    modalBg.classList.add('modal');
 
-        return modalBg;
+    const modalContainer = document.createElement('div');
+    modalContainer.classList.add('modal-content');
+
+    const exitBtn = document.createElement('span');
+    exitBtn.classList.add('close-button');
+    exitBtn.textContent = '×';
+
+    const modalForm = document.createElement('form');
+    const formTitle = document.createElement('h2');
+
+    formTitle.textContent = "Add New Project";
+    modalForm.append(formTitle);
+
+    for (let element of newProject) {
+        const label = document.createElement('label');
+        label.textContent = element.stringLabel;
+
+        const input = document.createElement('input');
+        input.setAttribute('required', '');
+        input.type = element.inputType;
+        input.name = element.camelCase;
+
+        label.appendChild(input);
+        modalForm.append(label);
     }
+
+    const submitBtn = document.createElement('button');
+    submitBtn.textContent = "Add Project"
+
+    modalForm.appendChild(submitBtn);
+
+    exitBtn.addEventListener("click", closeModal);
+    window.addEventListener("click", function(e) {if(e.target == modalBg) closeModal()})
+    function closeModal() {modalBg.classList.remove("show-modal")};
+
+    modalContainer.append(exitBtn, modalForm);
+    modalBg.append(modalContainer);
+
+    document.body.append(header, menu, main, modalBg);
 };

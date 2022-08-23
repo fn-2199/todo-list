@@ -1,3 +1,3 @@
-import Homepage from './UI';
+import UI from './UI';
 
-addEventListener('DOMContentLoaded', Homepage);
+addEventListener('DOMContentLoaded', UI);

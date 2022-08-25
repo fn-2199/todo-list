@@ -1,48 +1,49 @@
 import './style.css';
 
-// Factory Function for Tab Creation
-const pages = (title, icon, link) => {
-    return {title, icon, link};
-}
-
-// Factory Function for Form Elements
-const formElements = (camelCase, stringLabel, inputType) => {
-    return {camelCase, stringLabel, inputType}
-}
-
-const toggleNav = function() {
-    document.body.classList.toggle('collapse');
-}
-
-const addTask = function() {
-    document.querySelector('.modal').classList.add('show-modal');
-}
-
-// Generate Tab Page
-function generateTab() {
-    const tabContainer = document.createElement('div');
-
-    const tabTitle = document.createElement('h2');
-    tabTitle.textContent = this.title;
-
-    const p = document.createElement('p');
-    p.textContent = `This is the ${this.title} tab`;
-
-    tabContainer.append(tabTitle, p);
-    
-    return tabContainer;
-}
-// Arrays
-const homePagesArray = [pages('Inbox', 'inbox', generateTab), pages('Today', 'today', generateTab), pages('Upcoming', 'date_range', generateTab)];
-let projectsPagesArray = [];
-const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
-const headerArray = [pages('', 'menu', toggleNav), pages('', 'add', addTask)];
-
-// Modal Form Arrays
-const newTaskArray = [formElements('taskTitle', 'Title', 'text'), formElements('dueDate', 'Due Date', 'datetime-local'), formElements('priority', 'Priority', 'radio')];
-const newProject = [formElements('name', 'Name', 'text')];
-
 export default function generateUI() {
+
+    // Factory Function for Tab Creation
+    const pages = (title, icon, link) => {
+        return {title, icon, link};
+    }
+
+    // Factory Function for Form Elements
+    const formElements = (camelCase, stringLabel, inputType) => {
+        return {camelCase, stringLabel, inputType}
+    }
+
+    function toggleNav() {
+        document.body.classList.toggle('collapse');
+    }
+
+    function addTask() {
+        document.querySelector('.modal').classList.add('show-modal');
+    }
+
+    // Generate Tab Page
+    function generateTab() {
+        const tabContainer = document.createElement('div');
+
+        const tabTitle = document.createElement('h2');
+        tabTitle.textContent = this.title;
+
+        const p = document.createElement('p');
+        p.textContent = `This is the ${this.title} tab`;
+
+        tabContainer.append(tabTitle, p);
+
+        return tabContainer;
+    }
+
+    // Arrays
+    const homePagesArray = [pages('Inbox', 'inbox', generateTab), pages('Today', 'today', generateTab), pages('Upcoming', 'date_range', generateTab)];
+    let projectsPagesArray = [];
+    const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
+    const headerArray = [pages('', 'menu', toggleNav), pages('', 'add', addTask)];
+
+    // Modal Form Arrays
+    const newTaskArray = [formElements('taskTitle', 'Title', 'text'), formElements('dueDate', 'Due Date', 'datetime-local'), formElements('priority', 'Priority', 'radio')];
+    const newProject = [formElements('name', 'Name', 'text')];
 
     // Generate Header
     const header = document.createElement('header');

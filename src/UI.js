@@ -62,11 +62,22 @@ export default function generateUI() {
         }
 
         const submitBtn = document.createElement('button');
-        submitBtn.textContent = "Add Project"
+        submitBtn.textContent = "Create";
+
+        modalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            addProject();
+            closeModal();
+        });
 
         modalForm.appendChild(submitBtn);
-
         modalContainer.appendChild(modalForm);
+    }
+
+    function addProject() {
+        let projectName = document.getElementsByName("name")[0].value;
+        const newProject = pages(projectName, 'list', generateTab);
+        projectsPagesArray.splice(-1, 0, newProject);
     }
 
     // Arrays

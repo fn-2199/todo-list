@@ -12,12 +12,16 @@ export default function generateUI() {
         return {camelCase, stringLabel, inputType}
     }
 
+    // Function for Toggle Menu
     function toggleNav() {
         document.body.classList.toggle('collapse');
     }
 
     // Generate Tab Page
     function generateTab() {
+        // Refresh content
+        document.querySelector('main').textContent = '';
+
         const tabContainer = document.createElement('div');
 
         const tabTitle = document.createElement('h2');
@@ -28,16 +32,20 @@ export default function generateUI() {
 
         tabContainer.append(tabTitle, p);
 
-        return tabContainer;
+        document.querySelector('main').appendChild(tabContainer);
     }
 
     // Generate Form
     function generateForm() {
-        modalForm.textContent = '';
+        // Refresh content
+        if (modalContainer.childElementCount == 2) {(modalContainer.firstChild.nextSibling).remove()};
+
         document.querySelector('.modal').classList.add('show-modal');
 
+        const modalForm = document.createElement('form');
+
         const formTitle = document.createElement('h2');
-        formTitle.textContent = 'Hi';
+        formTitle.textContent = this.title;
         modalForm.append(formTitle);
 
         for (let element of newProject) {
@@ -58,6 +66,7 @@ export default function generateUI() {
 
         modalForm.appendChild(submitBtn);
 
+        modalContainer.appendChild(modalForm);
     }
 
     // Arrays
@@ -81,7 +90,7 @@ export default function generateUI() {
         const headerIcon = document.createElement('span');
         headerIcon.classList.add('material-icons-round', 'md-36');
         headerIcon.id = headerIcon.textContent = item.icon;
-        headerIcon.onclick = item.link;
+        headerIcon.onclick = item.link.bind(item);
         (item.icon == 'menu') ? header.insertBefore(headerIcon, h1) : header.append(headerIcon);
     }
 
@@ -109,14 +118,7 @@ export default function generateUI() {
             tabIcon.classList.add('material-icons-round');
             tabIcon.textContent = tab.icon;
 
-            if (tab.title == 'Add Project') {
-                tabKey.onclick = tab.link;
-            } else {
-                tabKey.onclick = function() {
-                    document.querySelector('main').textContent = '';
-                    document.querySelector('main').appendChild(tab.link());
-                }
-            }
+            tabKey.onclick = tab.link.bind(tab);
 
             tabKey.append(tabIcon, tabName);
             catContainer.appendChild(tabKey);
@@ -134,9 +136,7 @@ export default function generateUI() {
     exitBtn.classList.add('close-button');
     exitBtn.textContent = '×';
 
-    const modalForm = document.createElement('form');
-
-    modalContainer.append(exitBtn, modalForm);
+    modalContainer.append(exitBtn);
     modalBg.append(modalContainer);
 
     // Exit Modal Function

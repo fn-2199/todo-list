@@ -17,16 +17,30 @@ const toggleNav = function() {
 const addTask = function() {
     document.querySelector('.modal').classList.add('show-modal');
 }
+
+// Generate Tab Page
+function generateTab() {
+    const tabContainer = document.createElement('div');
+
+    const tabTitle = document.createElement('h2');
+    tabTitle.textContent = this.title;
+
+    const p = document.createElement('p');
+    p.textContent = `This is the ${this.title} tab`;
+
+    tabContainer.append(tabTitle, p);
+    
+    return tabContainer;
+}
 // Arrays
-const homePagesArray = [pages('Inbox', 'inbox', ''), pages('Today', 'today', ''), pages('Upcoming', 'date_range', '')];
-let projectsPagesArray = [pages('Add Projects', 'add', addTask)];
+const homePagesArray = [pages('Inbox', 'inbox', generateTab), pages('Today', 'today', generateTab), pages('Upcoming', 'date_range', generateTab)];
+let projectsPagesArray = [];
 const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
 const headerArray = [pages('', 'menu', toggleNav), pages('', 'add', addTask)];
 
 // Modal Form Arrays
 const newTaskArray = [formElements('taskTitle', 'Title', 'text'), formElements('dueDate', 'Due Date', 'datetime-local'), formElements('priority', 'Priority', 'radio')];
 const newProject = [formElements('name', 'Name', 'text')];
-
 
 export default function generateUI() {
 
@@ -69,10 +83,10 @@ export default function generateUI() {
             tabIcon.classList.add('material-icons-round');
             tabIcon.textContent = tab.icon;
 
-            // tabKey.onclick = function() {
-            //     document.querySelector('main').textContent = '';
-            //     document.querySelector('main').appendChild(tab.link());
-            // }
+            tabKey.onclick = function() {
+                document.querySelector('main').textContent = '';
+                document.querySelector('main').appendChild(tab.link());
+            }
 
             tabKey.append(tabIcon, tabName);
             catContainer.appendChild(tabKey);
@@ -114,6 +128,7 @@ export default function generateUI() {
 
     modalForm.appendChild(submitBtn);
 
+    // Exit Modal Function
     exitBtn.addEventListener("click", closeModal);
     window.addEventListener("click", function(e) {if(e.target == modalBg) closeModal()})
     function closeModal() {modalBg.classList.remove("show-modal")};

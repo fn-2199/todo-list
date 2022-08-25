@@ -16,10 +16,6 @@ export default function generateUI() {
         document.body.classList.toggle('collapse');
     }
 
-    function addTask() {
-        document.querySelector('.modal').classList.add('show-modal');
-    }
-
     // Generate Tab Page
     function generateTab() {
         const tabContainer = document.createElement('div');
@@ -35,11 +31,40 @@ export default function generateUI() {
         return tabContainer;
     }
 
+    // Generate Form
+    function generateForm() {
+        modalForm.textContent = '';
+        document.querySelector('.modal').classList.add('show-modal');
+
+        const formTitle = document.createElement('h2');
+        formTitle.textContent = 'Hi';
+        modalForm.append(formTitle);
+
+        for (let element of newProject) {
+            const label = document.createElement('label');
+            label.textContent = element.stringLabel;
+
+            const input = document.createElement('input');
+            input.setAttribute('required', '');
+            input.type = element.inputType;
+            input.name = element.camelCase;
+
+            label.appendChild(input);
+            modalForm.append(label);
+        }
+
+        const submitBtn = document.createElement('button');
+        submitBtn.textContent = "Add Project"
+
+        modalForm.appendChild(submitBtn);
+
+    }
+
     // Arrays
     const homePagesArray = [pages('Inbox', 'inbox', generateTab), pages('Today', 'today', generateTab), pages('Upcoming', 'date_range', generateTab)];
-    let projectsPagesArray = [];
+    let projectsPagesArray = [pages('Add Project', 'add', generateForm)];
     const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
-    const headerArray = [pages('', 'menu', toggleNav), pages('', 'add', addTask)];
+    const headerArray = [pages('', 'menu', toggleNav), pages('Add New Task', 'add', generateForm)];
 
     // Modal Form Arrays
     const newTaskArray = [formElements('taskTitle', 'Title', 'text'), formElements('dueDate', 'Due Date', 'datetime-local'), formElements('priority', 'Priority', 'radio')];
@@ -84,9 +109,13 @@ export default function generateUI() {
             tabIcon.classList.add('material-icons-round');
             tabIcon.textContent = tab.icon;
 
-            tabKey.onclick = function() {
-                document.querySelector('main').textContent = '';
-                document.querySelector('main').appendChild(tab.link());
+            if (tab.title == 'Add Project') {
+                tabKey.onclick = tab.link;
+            } else {
+                tabKey.onclick = function() {
+                    document.querySelector('main').textContent = '';
+                    document.querySelector('main').appendChild(tab.link());
+                }
             }
 
             tabKey.append(tabIcon, tabName);
@@ -106,36 +135,14 @@ export default function generateUI() {
     exitBtn.textContent = '×';
 
     const modalForm = document.createElement('form');
-    const formTitle = document.createElement('h2');
 
-    formTitle.textContent = "Add New Project";
-    modalForm.append(formTitle);
-
-    for (let element of newProject) {
-        const label = document.createElement('label');
-        label.textContent = element.stringLabel;
-
-        const input = document.createElement('input');
-        input.setAttribute('required', '');
-        input.type = element.inputType;
-        input.name = element.camelCase;
-
-        label.appendChild(input);
-        modalForm.append(label);
-    }
-
-    const submitBtn = document.createElement('button');
-    submitBtn.textContent = "Add Project"
-
-    modalForm.appendChild(submitBtn);
+    modalContainer.append(exitBtn, modalForm);
+    modalBg.append(modalContainer);
 
     // Exit Modal Function
     exitBtn.addEventListener("click", closeModal);
     window.addEventListener("click", function(e) {if(e.target == modalBg) closeModal()})
     function closeModal() {modalBg.classList.remove("show-modal")};
-
-    modalContainer.append(exitBtn, modalForm);
-    modalBg.append(modalContainer);
 
     document.body.append(header, menu, main, modalBg);
 };

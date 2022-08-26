@@ -79,11 +79,22 @@ export default function generateUI() {
         const newProject = pages(projectName, 'list', generateTab);
         projectsPagesArray.splice(-1, 0, newProject);
 
-        const nodeList = document.querySelectorAll('#projects > .tab');
-        nodeList.forEach((node) => node.remove());
+        document.querySelectorAll('#projects > .tab').forEach((node) => node.remove());
 
         const nodeProject = document.getElementById('projects');
         displayTabs(nodeProject, projectsPagesArray);
+
+        const projectsList = document.querySelectorAll('#projects > .tab');
+
+        for (let i = 0; i < projectsList.length - 1; i++) {
+            const options = document.createElement('span');
+            options.classList.add('material-icons-round', 'option');
+            options.textContent = 'more_vert';
+            options.onclick = function() {
+                console.log(`Remove ${projectsList[i].firstChild.nextSibling.textContent}`)
+            };
+            projectsList[i].appendChild(options);
+        }
     }
 
     // Arrays

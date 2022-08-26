@@ -86,6 +86,10 @@ body.collapse main {
     padding: 8px 5px;
 }
 
+.option {
+    margin-left: auto;
+}
+
 #projects {
     margin-top: 40px;
 }
@@ -155,8 +159,6 @@ button,
 }
 
 /* Modal Form */
-
-
 
 button {
     background: none;

@@ -75,9 +75,15 @@ export default function generateUI() {
     }
 
     function addProject() {
-        let projectName = document.getElementsByName("name")[0].value;
+        let projectName = document.getElementsByName("projectName")[0].value;
         const newProject = pages(projectName, 'list', generateTab);
         projectsPagesArray.splice(-1, 0, newProject);
+
+        const nodeList = document.querySelectorAll('#projects > .tab');
+        nodeList.forEach((node) => node.remove());
+
+        const nodeProject = document.getElementById('projects');
+        displayTabs(nodeProject, projectsPagesArray);
     }
 
     // Arrays
@@ -88,7 +94,7 @@ export default function generateUI() {
 
     // Modal Form Arrays
     const newTaskArray = [formElements('taskTitle', 'Title', 'text'), formElements('dueDate', 'Due Date', 'datetime-local'), formElements('priority', 'Priority', 'radio')];
-    const newProject = [formElements('name', 'Name', 'text')];
+    const newProject = [formElements('projectName', 'Name', 'text')];
 
     // Generate Header
     const header = document.createElement('header');
@@ -118,7 +124,12 @@ export default function generateUI() {
         catName.textContent = cat.category;
         catContainer.appendChild(catName);
 
-        for (let tab of cat.subcategory) {
+        displayTabs(catContainer, cat.subcategory);
+    })
+
+    // Generate Tabs
+    function displayTabs(nodeContainer, array) {
+        for (let tab of array) {
             const tabKey = document.createElement('li');
             tabKey.classList.add('tab');
 
@@ -132,9 +143,9 @@ export default function generateUI() {
             tabKey.onclick = tab.link.bind(tab);
 
             tabKey.append(tabIcon, tabName);
-            catContainer.appendChild(tabKey);
+            nodeContainer.appendChild(tabKey);
         }
-    })
+    }
 
     // Generate Modal
     const modalBg = document.createElement('div');

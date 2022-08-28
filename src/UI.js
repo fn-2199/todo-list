@@ -19,31 +19,21 @@ export default function generateUI() {
 
     // Generate Tab Page
     function generateTab() {
-        // Refresh content
         document.querySelector('main').textContent = '';
-
         const tabContainer = document.createElement('div');
-
         const tabTitle = document.createElement('h2');
         tabTitle.textContent = this.title;
-
         const p = document.createElement('p');
         p.textContent = `This is the ${this.title} tab`;
-
         tabContainer.append(tabTitle, p);
-
         document.querySelector('main').appendChild(tabContainer);
     }
 
     // Generate Form
     function generateForm() {
-        // Refresh content
         if (modalContainer.childElementCount == 2) {(modalContainer.firstChild.nextSibling).remove()};
-
         document.querySelector('.modal').classList.add('show-modal');
-
         const modalForm = document.createElement('form');
-
         const formTitle = document.createElement('h2');
         formTitle.textContent = this.title;
         modalForm.append(formTitle);
@@ -74,6 +64,7 @@ export default function generateUI() {
         modalContainer.appendChild(modalForm);
     }
 
+    // Add Project Button Function
     function addProject() {
         let projectName = document.getElementsByName("projectName")[0].value;
         const newProject = pages(projectName, 'list', generateTab);
@@ -95,6 +86,11 @@ export default function generateUI() {
             };
             projectsList[i].appendChild(options);
         }
+    }
+
+    // Add New Task Button Function
+    function addNewTask() {
+
     }
 
     // Arrays

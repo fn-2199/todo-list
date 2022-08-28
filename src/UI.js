@@ -8,8 +8,8 @@ export default function generateUI() {
     }
 
     // Factory Function for Form Elements
-    const formElements = (camelCase, stringLabel, inputType) => {
-        return {camelCase, stringLabel, inputType}
+    const formElements = (camelCase, stringLabel, element, misc) => {
+        return {camelCase, stringLabel, element, misc}
     }
 
     // Function for Toggle Menu
@@ -33,6 +33,7 @@ export default function generateUI() {
     function generateForm() {
         if (modalContainer.childElementCount == 2) {(modalContainer.firstChild.nextSibling).remove()};
         document.querySelector('.modal').classList.add('show-modal');
+
         const modalForm = document.createElement('form');
         modalForm.action = '#';
         modalForm.method = 'post';
@@ -40,65 +41,43 @@ export default function generateUI() {
         formTitle.textContent = this.title;
         modalForm.appendChild(formTitle);
 
-        if (this.title == 'Add Project') {this.array = newProject}
-        else {this.array = newTaskArray};
+        (this.title == 'Add Project') ? this.array = newProject : this.array = newTaskArray;
 
-        for (let element of this.array) {
+        for (let divElement of this.array) {
             const div = document.createElement('div');
             const label = document.createElement('label');
-            label.textContent = element.stringLabel;
+            label.textContent = divElement.stringLabel;
 
-            const input = document.createElement('input');
-            input.setAttribute('required', '');
-            input.type = element.inputType;
-            input.name = element.camelCase;
+            const element = document.createElement(`${divElement.element}`);
+            element.setAttribute('required', '');
+            element.name = divElement.camelCase;
 
-            label.appendChild(input);
-            div.appendChild(label);
-            modalForm.appendChild(div);
-        }
-
-        if (this.title == 'Add New Task') {
-            const div = document.createElement('div');
-            const label = document.createElement('label');
-            label.textContent = 'Description';
-            const description = document.createElement('textarea');
-            
-            label.appendChild(description);
-            div.appendChild(label);
-            modalForm.appendChild(div);
-
-            for (let item of selectArray) {
-                const div = document.createElement('div');
-                const label = document.createElement('label');
-                label.textContent = item.label;
-                const select = document.createElement('select');
-                select.name = item.label.toLowerCase();
-                label.appendChild(select);
-                div.appendChild(label);
-                modalForm.appendChild(div);
-
-                for (let value of item.values) {
+            if (divElement.element == 'input') {
+                element.type = divElement.misc;
+            } else if (divElement.element == 'select') {
+                for (let value of divElement.misc) {
                     const option = document.createElement('option');
                     option.value = value.toLowerCase();
                     option.textContent = value;
-                    select.appendChild(option);
+                    element.appendChild(option);
                 }
             }
 
+            label.appendChild(element);
+            div.appendChild(label);
+            modalForm.appendChild(div);
         }
 
         const buttons = document.createElement('div');
         buttons.classList.add('buttons');
 
-        const cancelBtn = document.createElement('button');
-        cancelBtn.type = 'button';
-        cancelBtn.textContent = "Cancel";
-        cancelBtn.onclick = closeModal;
-
-        const submitBtn = document.createElement('button');
-        submitBtn.type = 'submit';
-        submitBtn.textContent = "Create";
+        [{type: 'button', text: 'Cancel'}, {type: 'submit', text: `${this.title}`}].forEach((btn) => {
+            const button = document.createElement('button');
+            button.type = btn.type;
+            button.textContent = btn.text;
+            if (btn.type == 'button') {button.onclick = closeModal};
+            buttons.appendChild(button);
+        });
 
         modalForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -106,10 +85,9 @@ export default function generateUI() {
             closeModal();
         });
 
-        buttons.append(cancelBtn, submitBtn);
         modalForm.appendChild(buttons);
         modalContainer.appendChild(modalForm);
-    }
+    };
 
     // Add Project Button Function
     function addProject() {
@@ -147,10 +125,11 @@ export default function generateUI() {
     const headerArray = [pages('', 'menu', toggleNav), pages('Add New Task', 'add', generateForm)];
 
     // Modal Form Arrays
-    const newTaskArray = [formElements('taskTitle', 'Title', 'text'), formElements('dueDate', 'Due Date', 'datetime-local')];
-    const newProject = [formElements('projectName', 'Name', 'text')];
     let projectsArray = ['Inbox'];
-    const selectArray = [{label: 'Priority', values: ['Low', 'Medium', 'High']}, {label: 'Projects', values: projectsArray}];
+    const priorityArray = ['Low', 'Medium', 'High'];
+
+    const newTaskArray = [formElements('taskTitle', 'Title', 'input', 'text'), formElements('taskDescription', 'Description', 'textarea', ''), formElements('dueDate', 'Due Date', 'input', 'datetime-local'), formElements('priority', 'Priority', 'select', priorityArray), formElements('project', 'Project', 'select', projectsArray)];
+    const newProject = [formElements('projectName', 'Name', 'input', 'text')];
 
     // Generate Header
     const header = document.createElement('header');

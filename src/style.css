@@ -160,11 +160,59 @@ button,
 
 /* Modal Form */
 
+input, textarea {
+    /* -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out; */
+    transition: all 0.30s ease-in-out;
+    outline: none;
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border-radius: 0.5rem;
+
+    width: 100%;
+    border: 1px solid var(--medium-grey);
+    font-size: inherit;
+}
+   
+input:focus, textarea:focus {
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 1px solid rgba(81, 203, 238, 1);
+}
+
+form div {
+    margin: 10px 0;
+}
+
+form h2 {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--dark-grey);
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
 button {
     background: none;
     border: none;
-    display: block;
     padding: 0;
-    margin: 0 auto;
     font-family: inherit;
+    font-size: 1rem;
+    padding: 10px 10px;
+    border-radius: 0.5rem;
+}
+
+button[type='submit'] {
+    background-color: var(--dark-color);
+    color: white;
+    border: 1px solid var(--dark-color);
+}
+
+button[type='button'] {
+    border: 1px solid black;
 }

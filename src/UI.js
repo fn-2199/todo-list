@@ -68,6 +68,24 @@ export default function generateUI() {
             div.appendChild(label);
             modalForm.appendChild(div);
 
+            for (let item of selectArray) {
+                const div = document.createElement('div');
+                const label = document.createElement('label');
+                label.textContent = item.label;
+                const select = document.createElement('select');
+                select.name = item.label.toLowerCase();
+                label.appendChild(select);
+                div.appendChild(label);
+                modalForm.appendChild(div);
+
+                for (let value of item.values) {
+                    const option = document.createElement('option');
+                    option.value = value.toLowerCase();
+                    option.textContent = value;
+                    select.appendChild(option);
+                }
+            }
+
         }
 
         const buttons = document.createElement('div');

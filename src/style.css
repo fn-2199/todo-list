@@ -160,7 +160,7 @@ button,
 
 /* Modal Form */
 
-input, textarea {
+input, select, textarea {
     /* -webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
     -ms-transition: all 0.30s ease-in-out;
@@ -176,9 +176,13 @@ input, textarea {
     font-size: inherit;
 }
    
-input:focus, textarea:focus {
+input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 5px rgba(81, 203, 238, 1);
     border: 1px solid rgba(81, 203, 238, 1);
+}
+
+select {
+    background: none;
 }
 
 form div {

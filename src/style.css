@@ -181,6 +181,10 @@ input:focus, select:focus, textarea:focus {
     border: 1px solid rgba(81, 203, 238, 1);
 }
 
+input, textarea, select, button {
+    font-family: inherit;
+}
+
 select {
     background: none;
 }
@@ -205,7 +209,6 @@ button {
     background: none;
     border: none;
     padding: 0;
-    font-family: inherit;
     font-size: 1rem;
     padding: 10px 10px;
     border-radius: 0.5rem;

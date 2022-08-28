@@ -1,7 +1,7 @@
 import './style.css';
+import {projectsArray, taskObject, taskArray} from './logic';
 
 export default function generateUI() {
-
     // Factory Function for Tab Creation
     const pages = (title, icon, link) => {
         return {title, icon, link};
@@ -11,7 +11,6 @@ export default function generateUI() {
     const formElements = (camelCase, stringLabel, element, misc) => {
         return {camelCase, stringLabel, element, misc}
     }
-
     // Function for Toggle Menu
     function toggleNav() {
         document.body.classList.toggle('collapse');
@@ -97,30 +96,35 @@ export default function generateUI() {
     // Add Project Button Function
     function addProject() {
         let projectName = document.getElementsByName("projectName")[0].value;
-        const newProject = pages(projectName, 'list', generateTab);
-        projectsPagesArray.splice(-1, 0, newProject);
+        projectsArray.push(projectName); //Push to Project Array
+        const newProject = pages(projectName, 'list', generateTab); //Creates Tab Object
+        projectsPagesArray.splice(-1, 0, newProject); //Appends it to Projects Category
 
-        document.querySelectorAll('#projects > .tab').forEach((node) => node.remove());
+        document.querySelectorAll('#projects > .tab').forEach((node) => node.remove()); //Refreshes Projects Category
 
         const nodeProject = document.getElementById('projects');
-        displayTabs(nodeProject, projectsPagesArray);
+        displayTabs(nodeProject, projectsPagesArray); //Re-displays all project tabs
 
+        // Generate More Options Icon/Function
         const projectsList = document.querySelectorAll('#projects > .tab');
-
         for (let i = 0; i < projectsList.length - 1; i++) {
             const options = document.createElement('span');
             options.classList.add('material-icons-round', 'option');
             options.textContent = 'more_vert';
-            options.onclick = function() {
-                console.log(`Remove ${projectsList[i].firstChild.nextSibling.textContent}`)
-            };
+            options.onclick = function() {console.log(`Remove ${projectsList[i].firstChild.nextSibling.textContent}`)};
             projectsList[i].appendChild(options);
         }
     }
 
     // Add New Task Button Function
     function addNewTask() {
-        console.log('Success');
+        const title = document.getElementsByName("taskTitle")[0].value;
+        const description = document.getElementsByName("taskDescription")[0].value;
+        const dueDate = document.getElementsByName("dueDate")[0].value;
+        const priority = document.getElementsByName("priority")[0].value;
+        const project = document.getElementsByName("project")[0].value;
+
+        taskArray.push(taskObject(title, description, dueDate, priority, project));
     }
 
     // Arrays
@@ -130,7 +134,6 @@ export default function generateUI() {
     const headerArray = [pages('', 'menu', toggleNav), pages('Add New Task', 'add', generateForm)];
 
     // Modal Form Arrays
-    let projectsArray = ['Inbox'];
     const priorityArray = ['Low', 'Medium', 'High'];
 
     const newTaskArray = [formElements('taskTitle', 'Title', 'input', 'text'), formElements('taskDescription', 'Description', 'textarea', ''), formElements('dueDate', 'Due Date', 'input', 'datetime-local'), formElements('priority', 'Priority', 'select', priorityArray), formElements('project', 'Project', 'select', projectsArray)];

@@ -34,15 +34,18 @@ export default function generateUI() {
         if (modalContainer.childElementCount == 2) {(modalContainer.firstChild.nextSibling).remove()};
         document.querySelector('.modal').classList.add('show-modal');
 
+        // Initialize Form
         const modalForm = document.createElement('form');
         modalForm.action = '#';
         modalForm.method = 'post';
+        modalForm.id = (this.title.replace(/\s/g, '')).toLowerCase() + 'Form';
         const formTitle = document.createElement('h2');
         formTitle.textContent = this.title;
         modalForm.appendChild(formTitle);
 
         (this.title == 'Add Project') ? this.array = newProject : this.array = newTaskArray;
 
+        // Generate Form Elements
         for (let divElement of this.array) {
             const div = document.createElement('div');
             const label = document.createElement('label');
@@ -68,6 +71,7 @@ export default function generateUI() {
             modalForm.appendChild(div);
         }
 
+        // Generate Buttons
         const buttons = document.createElement('div');
         buttons.classList.add('buttons');
 
@@ -79,9 +83,10 @@ export default function generateUI() {
             buttons.appendChild(button);
         });
 
+        // Submit Button Function
         modalForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            addProject();
+            (e.target.id == 'addprojectForm') ? addProject() : addNewTask();
             closeModal();
         });
 
@@ -115,7 +120,7 @@ export default function generateUI() {
 
     // Add New Task Button Function
     function addNewTask() {
-
+        console.log('Success');
     }
 
     // Arrays

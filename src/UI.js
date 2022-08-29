@@ -18,7 +18,7 @@ export default function generateUI() {
 
     // Generate Tab Page
     function generateTab() {
-        document.querySelector('main').textContent = '';
+        main.textContent = '';
         const tabContainer = document.createElement('div');
         const tabTitle = document.createElement('h2');
         tabTitle.textContent = this.title;
@@ -26,7 +26,7 @@ export default function generateUI() {
         taskContainer.classList.add('task-container');
         if (taskContainer.textContent == '') {taskChecker(taskContainer)};
         tabContainer.append(tabTitle, taskContainer);
-        document.querySelector('main').appendChild(tabContainer);
+        main.appendChild(tabContainer);
     }
 
     function taskChecker(element) {
@@ -136,7 +136,7 @@ export default function generateUI() {
     const homePagesArray = [pages('Inbox', 'inbox', generateTab), pages('Today', 'today', generateTab), pages('Upcoming', 'date_range', generateTab)];
     let projectsPagesArray = [pages('Add Project', 'add', generateForm)];
     const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
-    const headerArray = [pages('', 'menu', toggleNav), pages('Add New Task', 'add', generateForm)];
+    const headerArray = [pages('Menu', 'menu', toggleNav), pages('Add New Task', 'add', generateForm)];
 
     // Modal Form Arrays
     const priorityArray = ['Low', 'Medium', 'High'];
@@ -215,6 +215,7 @@ export default function generateUI() {
     function closeModal() {modalBg.classList.remove("show-modal")};
 
     // Generate Selected Tab Effect
-
+    generateTab.call(homePagesArray[0]);
+    
     document.body.append(header, menu, main, modalBg);
 };

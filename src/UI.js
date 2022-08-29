@@ -22,10 +22,15 @@ export default function generateUI() {
         const tabContainer = document.createElement('div');
         const tabTitle = document.createElement('h2');
         tabTitle.textContent = this.title;
-        const p = document.createElement('p');
-        p.textContent = `This is the ${this.title} tab`;
-        tabContainer.append(tabTitle, p);
+        const taskContainer = document.createElement('div');
+        taskContainer.classList.add('task-container');
+        if (taskContainer.textContent == '') {taskChecker(taskContainer)};
+        tabContainer.append(tabTitle, taskContainer);
         document.querySelector('main').appendChild(tabContainer);
+    }
+
+    function taskChecker(element) {
+        element.textContent = "You do not have any task.";
     }
 
     // Generate Form
@@ -208,6 +213,8 @@ export default function generateUI() {
     exitBtn.addEventListener("click", closeModal);
     window.addEventListener("click", function(e) {if(e.target == modalBg) closeModal()})
     function closeModal() {modalBg.classList.remove("show-modal")};
+
+    // Generate Selected Tab Effect
 
     document.body.append(header, menu, main, modalBg);
 };

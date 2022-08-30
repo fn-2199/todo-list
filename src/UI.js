@@ -16,23 +16,6 @@ export default function generateUI() {
         document.body.classList.toggle('collapse');
     }
 
-    // Generate Tab Page
-    function generateTab() {
-        main.textContent = '';
-        const tabContainer = document.createElement('div');
-        const tabTitle = document.createElement('h2');
-        tabTitle.textContent = this.title;
-        const taskContainer = document.createElement('div');
-        taskContainer.classList.add('task-container');
-        if (taskContainer.textContent == '') {taskChecker(taskContainer)};
-        tabContainer.append(tabTitle, taskContainer);
-        main.appendChild(tabContainer);
-    }
-
-    function taskChecker(element) {
-        element.textContent = "You do not have any task.";
-    }
-
     // Generate Form
     function generateForm() {
         if (modalContainer.childElementCount == 2) {(modalContainer.firstChild.nextSibling).remove()};
@@ -132,6 +115,29 @@ export default function generateUI() {
         taskArray.push(taskObject(title, description, dueDate, priority, project));
     }
 
+    // Generate Tab Page
+    function generateTab() {
+        activateEffect.call(this);
+
+        main.textContent = '';
+        const tabContainer = document.createElement('div');
+        const tabTitle = document.createElement('h2');
+        tabTitle.textContent = this.title;
+        const taskContainer = document.createElement('div');
+        taskContainer.classList.add('task-container');
+        if (taskContainer.textContent == '') {taskChecker(taskContainer)};
+        tabContainer.append(tabTitle, taskContainer);
+        main.appendChild(tabContainer);
+    }
+
+    function activateEffect() {
+        for (let tab of tabsNodeArray) (this.title == tab.firstChild.nextSibling.textContent) ? tab.classList.add('selected') : tab.classList.remove('selected');
+    }
+
+    function taskChecker(element) {
+        element.textContent = "You do not have any task.";
+    }
+
     // Arrays
     const homePagesArray = [pages('Inbox', 'inbox', generateTab), pages('Today', 'today', generateTab), pages('Upcoming', 'date_range', generateTab)];
     let projectsPagesArray = [pages('Add Project', 'add', generateForm)];
@@ -161,6 +167,7 @@ export default function generateUI() {
 
     const main = document.createElement('main');
     const menu = document.createElement('nav');
+    let tabsNodeArray = [];
 
     // Generate Nav/Sidebar Content
     CATEGORY.forEach((cat) => {
@@ -189,6 +196,7 @@ export default function generateUI() {
             tabIcon.textContent = tab.icon;
 
             tabKey.onclick = tab.link.bind(tab);
+            if(tab.title != 'Add Project') tabsNodeArray.push(tabKey);
 
             tabKey.append(tabIcon, tabName);
             nodeContainer.appendChild(tabKey);

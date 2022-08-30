@@ -83,25 +83,11 @@ export default function generateUI() {
 
     // Add Project Button Function
     function addProject() {
-        let projectName = document.getElementsByName("projectName")[0].value;
+        let projectName = document.getElementsByName("projectName")[0].value; //Grabs value from form
         projectsArray.push(projectName); //Push to Project Array
         const newProject = pages(projectName, 'list', generateTab); //Creates Tab Object
         projectsPagesArray.splice(-1, 0, newProject); //Appends it to Projects Category
-
-        document.querySelectorAll('#projects > .tab').forEach((node) => node.remove()); //Refreshes Projects Category
-
-        const nodeProject = document.getElementById('projects');
-        displayTabs(nodeProject, projectsPagesArray); //Re-displays all project tabs
-
-        // Generate More Options Icon/Function
-        const projectsList = document.querySelectorAll('#projects > .tab');
-        for (let i = 0; i < projectsList.length - 1; i++) {
-            const options = document.createElement('span');
-            options.classList.add('material-icons-round', 'option');
-            options.textContent = 'more_vert';
-            options.onclick = function() {console.log(`Remove ${projectsList[i].firstChild.nextSibling.textContent}`)};
-            projectsList[i].appendChild(options);
-        }
+        displayTabs(categoryNodeList[1], [newProject]);
     }
 
     // Add New Task Button Function
@@ -131,7 +117,7 @@ export default function generateUI() {
     }
 
     function activateEffect() {
-        for (let tab of tabsNodeArray) (this.title == tab.firstChild.nextSibling.textContent) ? tab.classList.add('selected') : tab.classList.remove('selected');
+        for (let tab of tabsNodeList) (this.title == tab.firstChild.nextSibling.textContent) ? tab.classList.add('selected') : tab.classList.remove('selected');
     }
 
     function taskChecker(element) {
@@ -150,11 +136,13 @@ export default function generateUI() {
     const newTaskArray = [formElements('taskTitle', 'Title', 'input', 'text'), formElements('taskDescription', 'Description', 'textarea', ''), formElements('dueDate', 'Due Date', 'input', 'datetime-local'), formElements('priority', 'Priority', 'select', priorityArray), formElements('project', 'Project', 'select', projectsArray)];
     const newProject = [formElements('projectName', 'Name', 'input', 'text')];
 
-    // Generate Header
+    // Generate Main Layout Components
     const header = document.createElement('header');
     const h1 = document.createElement('h1');
     h1.textContent = document.title;
     header.append(h1);
+    const main = document.createElement('main');
+    const menu = document.createElement('nav');
 
     // Generate Header Icons
     for (let item of headerArray) {
@@ -165,9 +153,10 @@ export default function generateUI() {
         (item.icon == 'menu') ? header.insertBefore(headerIcon, h1) : header.append(headerIcon);
     }
 
-    const main = document.createElement('main');
-    const menu = document.createElement('nav');
-    let tabsNodeArray = [];
+    // Node References
+    let tabsNodeList = [];
+    let categoryNodeList = [];
+    let addProjectNode;
 
     // Generate Nav/Sidebar Content
     CATEGORY.forEach((cat) => {
@@ -179,6 +168,7 @@ export default function generateUI() {
         catName.textContent = cat.category;
         catContainer.appendChild(catName);
 
+        categoryNodeList.push(catContainer);
         displayTabs(catContainer, cat.subcategory);
     })
 
@@ -196,11 +186,19 @@ export default function generateUI() {
             tabIcon.textContent = tab.icon;
 
             tabKey.onclick = tab.link.bind(tab);
-            if(tab.title != 'Add Project') tabsNodeArray.push(tabKey);
+            (tab.title == 'Add Project') ? addProjectNode = tabKey : tabsNodeList.push(tabKey);
 
             tabKey.append(tabIcon, tabName);
-            nodeContainer.appendChild(tabKey);
+            (nodeContainer.contains(addProjectNode)) ? nodeContainer.insertBefore(tabKey, addProjectNode): nodeContainer.appendChild(tabKey);
         }
+    }
+
+    function generateOptions() {
+        const options = document.createElement('span');
+        options.classList.add('material-icons-round', 'option');
+        options.textContent = 'more_vert';
+        options.onclick = function() {console.log(`Remove ${projectsList[i].firstChild.nextSibling.textContent}`)};
+        projectsList[i].appendChild(options);
     }
 
     // Generate Modal

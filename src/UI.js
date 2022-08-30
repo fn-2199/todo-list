@@ -189,16 +189,20 @@ export default function generateUI() {
             (tab.title == 'Add Project') ? addProjectNode = tabKey : tabsNodeList.push(tabKey);
 
             tabKey.append(tabIcon, tabName);
-            (nodeContainer.contains(addProjectNode)) ? nodeContainer.insertBefore(tabKey, addProjectNode): nodeContainer.appendChild(tabKey);
+
+            if (nodeContainer.contains(addProjectNode)) {
+                generateOptions(tabKey); 
+                nodeContainer.insertBefore(tabKey, addProjectNode);
+            } else {nodeContainer.appendChild(tabKey)};
         }
     }
 
-    function generateOptions() {
+    function generateOptions(tabKey) {
         const options = document.createElement('span');
         options.classList.add('material-icons-round', 'option');
         options.textContent = 'more_vert';
-        options.onclick = function() {console.log(`Remove ${projectsList[i].firstChild.nextSibling.textContent}`)};
-        projectsList[i].appendChild(options);
+        options.onclick = function() {console.log(`Remove`)};
+        tabKey.appendChild(options);
     }
 
     // Generate Modal
@@ -220,7 +224,7 @@ export default function generateUI() {
     window.addEventListener("click", function(e) {if(e.target == modalBg) closeModal()})
     function closeModal() {modalBg.classList.remove("show-modal")};
 
-    // Generate Selected Tab Effect
+    // Generate Main Tab
     generateTab.call(homePagesArray[0]);
     
     document.body.append(header, menu, main, modalBg);

@@ -83,7 +83,7 @@ export default function generateUI() {
 
     // Add Project Button Function
     function addProject() {
-        let projectName = document.getElementsByName("projectName")[0].value; //Grabs value from form
+        let projectName = document.getElementsByName("projectName")[0].value; //Grabs value from Form
         projectsArray.push(projectName); //Push to Project Array
         const newProject = pages(projectName, 'list', generateTab); //Creates Tab Object
         projectsPagesArray.splice(-1, 0, newProject); //Appends it to Projects Category
@@ -198,21 +198,27 @@ export default function generateUI() {
         }
     }
 
+    // Generate Tab's Delete Button
     function generateDelete(tabKey) {
         const deleteContainer = document.createElement('span');
         deleteContainer.classList.add('delete');
         const deleteBtn = document.createElement('span');
         deleteBtn.classList.add('material-icons-round');
         deleteBtn.textContent = 'close';
-        deleteBtn.onclick = function(e) {
-            e.stopPropagation();
-            console.log(`Remove`)
-        };
+        deleteBtn.onclick = deleteFunc;
         deleteContainer.appendChild(deleteBtn);
         tabKey.appendChild(deleteContainer);
     }
 
-    function deleteFunc() {
+    // Delete Function
+    function deleteFunc(e) {
+        e.stopPropagation();
+        for (let i = 3; i < tabsNodeList.length; i++) {
+            if (e.target.parentNode.parentNode == tabsNodeList[i]) {
+                (e.target.parentNode.parentNode).remove();
+                break;
+            }
+        }
         
     }
 

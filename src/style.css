@@ -103,8 +103,19 @@ body.collapse main {
     padding: 8px 5px;
 }
 
-.option {
+/* Project Tab */
+
+.delete{
     margin-left: auto;
+    
+}
+
+.delete span {
+    visibility: hidden;
+}
+
+.delete:hover span {
+    visibility: visible;
 }
 
 #projects {

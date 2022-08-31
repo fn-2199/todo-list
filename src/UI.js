@@ -99,6 +99,7 @@ export default function generateUI() {
         const project = document.getElementsByName("project")[0].value;
 
         taskArray.push(taskObject(title, description, dueDate, priority, project));
+        console.log(taskArray);
     }
 
     // Generate Tab Page
@@ -191,18 +192,28 @@ export default function generateUI() {
             tabKey.append(tabIcon, tabName);
 
             if (nodeContainer.contains(addProjectNode)) {
-                generateOptions(tabKey); 
+                generateDelete(tabKey); 
                 nodeContainer.insertBefore(tabKey, addProjectNode);
             } else {nodeContainer.appendChild(tabKey)};
         }
     }
 
-    function generateOptions(tabKey) {
-        const options = document.createElement('span');
-        options.classList.add('material-icons-round', 'option');
-        options.textContent = 'more_vert';
-        options.onclick = function() {console.log(`Remove`)};
-        tabKey.appendChild(options);
+    function generateDelete(tabKey) {
+        const deleteContainer = document.createElement('span');
+        deleteContainer.classList.add('delete');
+        const deleteBtn = document.createElement('span');
+        deleteBtn.classList.add('material-icons-round');
+        deleteBtn.textContent = 'close';
+        deleteBtn.onclick = function(e) {
+            e.stopPropagation();
+            console.log(`Remove`)
+        };
+        deleteContainer.appendChild(deleteBtn);
+        tabKey.appendChild(deleteContainer);
+    }
+
+    function deleteFunc() {
+        
     }
 
     // Generate Modal

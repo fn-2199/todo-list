@@ -51,11 +51,54 @@ h1 {
     padding: 10px;
 }
 
+body.collapse nav {
+    transform: translateX(-100%);
+}
+
+body.collapse main {
+    grid-column: 1/-1;
+}
+
 nav {
     background-color: var(--light-grey);
     grid-row: 2/-1;
     grid-column: 1/2;
     padding: 25px;
+}
+
+#home h2,
+#projects h2 {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--dark-grey);
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 5px;
+}
+
+#projects {
+    margin-top: 40px;
+}
+
+.tab:hover,
+.selected {
+    background: var(--medium-grey);
+    border-radius: 10px;
+}
+
+ul {
+    list-style: none;
+}
+
+.material-icons-round.md-36,
+.tab,
+button,
+.close-button {
+    cursor: pointer;
 }
 
 /* Tab Pages */
@@ -80,29 +123,6 @@ main h2 {
     margin-top: 15px;
 }
 
-
-body.collapse nav {
-    transform: translateX(-100%);
-}
-
-body.collapse main {
-    grid-column: 1/-1;
-}
-
-#home h2,
-#projects h2 {
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    border-bottom: 2px solid var(--dark-grey);
-}
-
-.tab {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 8px 5px;
-}
-
 /* Project Tab */
 
 .delete{
@@ -116,27 +136,6 @@ body.collapse main {
 
 .delete:hover span {
     visibility: visible;
-}
-
-#projects {
-    margin-top: 40px;
-}
-
-.tab:hover,
-.selected {
-    background: var(--medium-grey);
-    border-radius: 10px;
-}
-
-ul {
-    list-style: none;
-}
-
-.material-icons-round.md-36,
-.tab,
-button,
-.close-button {
-    cursor: pointer;
 }
 
 /* MODALS */

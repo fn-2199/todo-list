@@ -47,7 +47,7 @@ export default function generateUI() {
             } else if (divElement.element == 'select') {
                 for (let value of divElement.misc) {
                     const option = document.createElement('option');
-                    option.value = value.toLowerCase();
+                    option.value = value;
                     option.textContent = value;
                     element.appendChild(option);
                 }
@@ -113,7 +113,7 @@ export default function generateUI() {
         taskContainer.classList.add('task-container');
         
         // In Progress
-        let tabArray = taskArray.filter((task) => task.project == this.title.toLowerCase());
+        let tabArray = taskArray.filter((task) => task.project == this.title);
 
         for (let task of tabArray) {
             const div = document.createElement('div');
@@ -125,7 +125,7 @@ export default function generateUI() {
             taskContainer.appendChild(div);
         }
 
-        if (taskContainer.textContent == '') {taskChecker(taskContainer)};
+        if (taskContainer.textContent == '') {noTaskMsg(taskContainer)};
         tabContainer.append(tabTitle, taskContainer);
         main.appendChild(tabContainer);
     }
@@ -134,7 +134,7 @@ export default function generateUI() {
         for (let tab of tabsNodeList) (this.title == tab.firstChild.nextSibling.textContent) ? tab.classList.add('selected') : tab.classList.remove('selected');
     }
 
-    function taskChecker(element) {
+    function noTaskMsg(element) {
         element.textContent = "You do not have any task.";
     }
 

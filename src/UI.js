@@ -227,6 +227,13 @@ export default function generateUI() {
     function deleteFunc(e) {
         e.stopPropagation();
 
+        // Remove logically
+        const deletedTab = e.target.parentNode.previousSibling.textContent;
+        projectsArray.splice(projectsArray.indexOf(deletedTab), 1);
+        for (let i = 0; i < taskArray.length; i++) {
+            if (taskArray[i].project == deletedTab) {taskArray.splice(i, 1)}
+        }
+
         // Remove display
         for (let tabNode of tabsNodeList){
             if (e.target.parentNode.parentNode == tabNode) {
@@ -234,10 +241,6 @@ export default function generateUI() {
                 break;
             }
         }
-
-        // Remove logically
-        
-        
     }
 
     // Generate Modal

@@ -99,7 +99,6 @@ export default function generateUI() {
         const project = document.getElementsByName("project")[0].value;
 
         taskArray.push(taskObject(title, description, dueDate, priority, project));
-        console.log(taskArray);
     }
 
     // Generate Tab Page
@@ -112,6 +111,20 @@ export default function generateUI() {
         tabTitle.textContent = this.title;
         const taskContainer = document.createElement('div');
         taskContainer.classList.add('task-container');
+        
+        // In Progress
+        let tabArray = taskArray.filter((task) => task.project == this.title.toLowerCase());
+
+        for (let task of tabArray) {
+            const div = document.createElement('div');
+            for (let value of Object.values(task)) {
+                const span = document.createElement('span');
+                span.textContent = value;
+                div.appendChild(span);
+            }
+            taskContainer.appendChild(div);
+        }
+
         if (taskContainer.textContent == '') {taskChecker(taskContainer)};
         tabContainer.append(tabTitle, taskContainer);
         main.appendChild(tabContainer);
@@ -213,12 +226,17 @@ export default function generateUI() {
     // Delete Function
     function deleteFunc(e) {
         e.stopPropagation();
-        for (let i = 3; i < tabsNodeList.length; i++) {
-            if (e.target.parentNode.parentNode == tabsNodeList[i]) {
+
+        // Remove display
+        for (let tabNode of tabsNodeList){
+            if (e.target.parentNode.parentNode == tabNode) {
                 (e.target.parentNode.parentNode).remove();
                 break;
             }
         }
+
+        // Remove logically
+        
         
     }
 

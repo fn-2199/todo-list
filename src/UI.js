@@ -1,6 +1,6 @@
 import './style.css';
 import {projectsArray, taskObject, taskArray} from './logic';
-import { compareAsc, format } from 'date-fns';
+import { eachDayOfInterval, format, addDays } from 'date-fns';
 
 export default function generateUI() {
     // Factory Function for Tab Creation
@@ -103,12 +103,10 @@ export default function generateUI() {
         taskArray.push(taskObject(title, description, dueDate, priority, project));
     }
 
-    function todaysDate() {
-        const today = format(new Date(), 'yyyy-MM-dd');
-        return today;
-    }
-
-    function next7Days() {
+    function upcomingDates() {
+        let sevenDaysArray = eachDayOfInterval({ start: new Date(), end: addDays(new Date(), 6) });
+        sevenDaysArray = sevenDaysArray.map((date) => format(date, 'yyyy-MM-dd'));
+        return sevenDaysArray;
     }
 
     // Generate Tab Page
@@ -121,14 +119,19 @@ export default function generateUI() {
         tabTitle.textContent = this.title;
         const taskContainer = document.createElement('div');
         taskContainer.classList.add('task-container');
-        
-        // In Progress
-        let tabArray = taskArray.filter((task) => task.project == this.title);
-        let todayArray = (taskArray.filter((task) => task.project == 'Inbox')).filter((task) => task.dueDate == todaysDate());
-        let UpcomingArray = 
 
-        console.log(taskArray);
-        console.log(todayArray);
+        let tabArray = [];
+
+        switch (this.title) {
+            case 'Today':
+               tabArray = (taskArray.filter((task) => task.project == 'Inbox')).filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd'));
+               break;
+            case 'Upcoming':
+                tabArray = (taskArray.filter((task) => task.project == 'Inbox')).filter((task) => upcomingDates().includes(task.dueDate));
+                break;
+            default:
+                tabArray = taskArray.filter((task) => task.project == this.title);
+        }
 
         for (let task of tabArray) {
             const div = document.createElement('div');

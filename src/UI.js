@@ -104,7 +104,7 @@ export default function generateUI() {
     }
 
     function upcomingDates() {
-        let sevenDaysArray = eachDayOfInterval({ start: new Date(), end: addDays(new Date(), 6) });
+        let sevenDaysArray = eachDayOfInterval({ start: addDays(new Date(), 1), end: addDays(new Date(), 7) });
         sevenDaysArray = sevenDaysArray.map((date) => format(date, 'yyyy-MM-dd'));
         return sevenDaysArray;
     }
@@ -124,10 +124,10 @@ export default function generateUI() {
 
         switch (this.title) {
             case 'Today':
-               tabArray = (taskArray.filter((task) => task.project == 'Inbox')).filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd'));
+               tabArray = taskArray.filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd'));
                break;
             case 'Upcoming':
-                tabArray = (taskArray.filter((task) => task.project == 'Inbox')).filter((task) => upcomingDates().includes(task.dueDate));
+                tabArray = taskArray.filter((task) => upcomingDates().includes(task.dueDate));
                 break;
             default:
                 tabArray = taskArray.filter((task) => task.project == this.title);

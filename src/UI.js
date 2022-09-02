@@ -1,5 +1,6 @@
 import './style.css';
 import {projectsArray, taskObject, taskArray} from './logic';
+import { compareAsc, format } from 'date-fns';
 
 export default function generateUI() {
     // Factory Function for Tab Creation
@@ -39,8 +40,9 @@ export default function generateUI() {
             label.textContent = divElement.stringLabel;
 
             const element = document.createElement(`${divElement.element}`);
-            element.setAttribute('required', '');
             element.name = divElement.camelCase;
+
+            if (['taskTitle', 'projectName'].includes(divElement.camelCase)) element.setAttribute('required', '');
 
             if (divElement.element == 'input') {
                 element.type = divElement.misc;
@@ -101,6 +103,14 @@ export default function generateUI() {
         taskArray.push(taskObject(title, description, dueDate, priority, project));
     }
 
+    function todaysDate() {
+        const today = format(new Date(), 'yyyy-MM-dd');
+        return today;
+    }
+
+    function next7Days() {
+    }
+
     // Generate Tab Page
     function generateTab() {
         activateEffect.call(this);
@@ -114,6 +124,11 @@ export default function generateUI() {
         
         // In Progress
         let tabArray = taskArray.filter((task) => task.project == this.title);
+        let todayArray = (taskArray.filter((task) => task.project == 'Inbox')).filter((task) => task.dueDate == todaysDate());
+        let UpcomingArray = 
+
+        console.log(taskArray);
+        console.log(todayArray);
 
         for (let task of tabArray) {
             const div = document.createElement('div');
@@ -147,7 +162,7 @@ export default function generateUI() {
     // Modal Form Arrays
     const priorityArray = ['Low', 'Medium', 'High'];
 
-    const newTaskArray = [formElements('taskTitle', 'Title', 'input', 'text'), formElements('taskDescription', 'Description', 'textarea', ''), formElements('dueDate', 'Due Date', 'input', 'datetime-local'), formElements('priority', 'Priority', 'select', priorityArray), formElements('project', 'Project', 'select', projectsArray)];
+    const newTaskArray = [formElements('taskTitle', 'Title', 'input', 'text'), formElements('taskDescription', 'Description', 'textarea', ''), formElements('dueDate', 'Due Date', 'input', 'date'), formElements('priority', 'Priority', 'select', priorityArray), formElements('project', 'Project', 'select', projectsArray)];
     const newProject = [formElements('projectName', 'Name', 'input', 'text')];
 
     // Generate Main Layout Components

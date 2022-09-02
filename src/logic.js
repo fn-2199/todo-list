@@ -1,6 +1,6 @@
 const taskObject = (title, description, dueDate, priority, project) => {
     let completed = false;
-    return {title, description, dueDate, priority, project, completed};
+    return {completed, title, description, priority, dueDate, project};
 }
 
 let taskArray = []

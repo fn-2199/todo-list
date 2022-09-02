@@ -277,7 +277,7 @@ export default function generateUI() {
 
     // Exit Modal Function
     exitBtn.addEventListener("click", closeModal);
-    window.addEventListener("click", function(e) {if(e.target == modalBg) closeModal()})
+    window.addEventListener("click", function(e) {if (e.target == modalBg) closeModal()})
     function closeModal() {modalBg.classList.remove("show-modal")};
 
     // Generate Main Tab

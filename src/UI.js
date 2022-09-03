@@ -1,6 +1,6 @@
 import './style.css';
-import {projectsArray, taskObject, taskArray} from './logic';
-import { eachDayOfInterval, format, addDays } from 'date-fns';
+import {taskCounter, projectsArray, taskObject, taskArray} from './logic';
+import {eachDayOfInterval, format, addDays, differenceInBusinessDays} from 'date-fns';
 
 export default function generateUI() {
     // Factory Function for Tab Creation
@@ -96,7 +96,7 @@ export default function generateUI() {
     function addNewTask() {
         const title = document.getElementsByName("taskTitle")[0].value;
         const description = document.getElementsByName("taskDescription")[0].value;
-        const dueDate = document.getElementsByName("dueDate")[0].value;
+        const dueDate = (document.getElementsByName("dueDate")[0].value) ? document.getElementsByName("dueDate")[0].value : 'No Due Date';
         const priority = document.getElementsByName("priority")[0].value;
         const project = document.getElementsByName("project")[0].value;
 
@@ -127,16 +127,33 @@ export default function generateUI() {
             div.classList.add('task-div');
             for (let [key, value] of Object.entries(task)) {
                 if (key == 'project' || key == 'description') continue;
-                const span = document.createElement('span');
-                span.textContent = value;
-                span.classList.add(`${key}`);
-                div.appendChild(span);
+
+                if (key == 'completed') {
+                    const checkBox = document.createElement('input');
+                    checkBox.setAttribute('type', 'checkbox');
+                    checkBox.checked = value;
+                    checkBox.classList.add(`${key}`);
+                    checkBox.addEventListener('change', changeStatus);
+                    div.append(checkBox);
+                } else if (key == 'id') {
+                    div.id = value;
+                } else {
+                    const span = document.createElement('span');
+                    span.textContent = value;
+                    span.classList.add(`${key}`);
+                    div.appendChild(span);
+                }
             }
             taskContainer.appendChild(div);
         }
 
         if (taskContainer.textContent == '') {noTaskMsg(taskContainer)};
         main.append(tabTitle, taskContainer);
+    }
+
+    function changeStatus() {
+        taskArray.find((task) => task.id == this.parentNode.id).completed = this.checked;
+        console.log(taskArray);
     }
 
     function activateEffect() {

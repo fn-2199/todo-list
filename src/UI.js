@@ -120,18 +120,8 @@ export default function generateUI() {
         const taskContainer = document.createElement('div');
         taskContainer.classList.add('task-container');
 
-        let tabArray = [];
-
-        switch (this.title) {
-            case 'Today':
-               tabArray = taskArray.filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd'));
-               break;
-            case 'Upcoming':
-                tabArray = taskArray.filter((task) => upcomingDates().includes(task.dueDate));
-                break;
-            default:
-                tabArray = taskArray.filter((task) => task.project == this.title);
-        }
+        const tabArray = (this.title == 'Today') ? taskArray.filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd')) :
+        (this.title == 'Upcoming') ? taskArray.filter((task) => upcomingDates().includes(task.dueDate)) : taskArray.filter((task) => task.project == this.title);
 
         for (let task of tabArray) {
             const div = document.createElement('div');

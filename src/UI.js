@@ -114,7 +114,6 @@ export default function generateUI() {
         activateEffect.call(this);
 
         main.textContent = '';
-        const tabContainer = document.createElement('div');
         const tabTitle = document.createElement('h2');
         tabTitle.textContent = this.title;
         const taskContainer = document.createElement('div');
@@ -125,17 +124,19 @@ export default function generateUI() {
 
         for (let task of tabArray) {
             const div = document.createElement('div');
-            for (let value of Object.values(task)) {
+            div.classList.add('task-div');
+            for (let [key, value] of Object.entries(task)) {
+                if (key == 'project' || key == 'description') continue;
                 const span = document.createElement('span');
                 span.textContent = value;
+                span.classList.add(`${key}`);
                 div.appendChild(span);
             }
             taskContainer.appendChild(div);
         }
 
         if (taskContainer.textContent == '') {noTaskMsg(taskContainer)};
-        tabContainer.append(tabTitle, taskContainer);
-        main.appendChild(tabContainer);
+        main.append(tabTitle, taskContainer);
     }
 
     function activateEffect() {

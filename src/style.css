@@ -24,12 +24,13 @@ body {
 }
 
 :root {
-    --dark-color: #002447;
+    --dark-color: #084C61;
     --light-color: #FFFFFF;
     --main-color: #FEB249;
     --light-grey: #EEEEEE;
     --medium-grey: #BBBBBB;
     --dark-grey: #888888;
+    --secondary-color: #D62828;
 }
 header {
     display: flex;
@@ -37,7 +38,7 @@ header {
     align-items: center;
     font-size: 1.5rem;
     background: var(--dark-color);
-    color: white;
+    color: var(--light-color);
     padding: 0 20px;
     grid-column: 1/-1;
     grid-row: 1/2;
@@ -159,7 +160,7 @@ main h2 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
+    background-color: var(--light-color);
     color: var(--dark-color);
     padding: 1rem 1.5rem;
     width: 24rem;
@@ -204,8 +205,8 @@ form input, select, textarea {
 }
    
 form input:focus, select:focus, textarea:focus {
-    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-    border: 1px solid rgba(81, 203, 238, 1);
+    box-shadow: 0 0 5px var(--main-color);
+    border: 1px solid var(--main-color);
 }
 
 input, textarea, select, button {
@@ -242,12 +243,14 @@ button {
 
 button[type='submit'] {
     background-color: var(--dark-color);
-    color: white;
+    color: var(--light-color);
     border: 1px solid var(--dark-color);
 }
 
 button[type='button'] {
-    border: 1px solid black;
+    border: 1px solid var(--secondary-color);
+    background-color: var(--secondary-color);
+    color: var(--light-color);
 }
 
 /* Individual Task */
@@ -255,6 +258,15 @@ button[type='button'] {
 .task-div {
     padding: 10px;
     display: flex;
-    justify-content: space-evenly;
-    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+    /* justify-content: space-between; */
+    border-bottom: 1px solid var(--dark-color);
 }
+
+/* .task-div > * {
+    padding-left: 5px;
+}
+
+
+.title {
+    margin-right: auto;
+} */

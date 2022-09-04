@@ -147,10 +147,24 @@ export default function generateUI() {
             for (let [key, value] of Object.entries(task)) {
                 switch (key) {
                     case 'project':
+                        let deleteBtn = document.createElement('span');
+                        deleteBtn.classList.add('material-icons-round', 'delete-btn');
+                        deleteBtn.textContent = 'delete';
+                        deleteBtn.onclick = function() {console.log('Delete')};
+                        div.appendChild(deleteBtn);
+                        break;
                     case 'description':
+                        let editBtn = document.createElement('span');
+                        editBtn.classList.add('material-icons-round', 'edit-btn');
+                        editBtn.textContent = 'edit';
+                        editBtn.onclick = function() {console.log('Edit')};
+                        div.appendChild(editBtn);
                         break;
                     case 'id':
                         div.id = value;
+                        break;
+                    case 'priority':
+                        div.style.borderLeft = (value == 'High') ? 'thick solid var(--secondary-color)' : (value == 'Medium') ? 'thick solid var(--main-color)' : 'thick solid green';
                         break;
                     case 'completed':
                         const checkBox = document.createElement('input');

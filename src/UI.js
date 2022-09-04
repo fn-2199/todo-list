@@ -1,6 +1,6 @@
 import './style.css';
 import {projectsArray, taskObject, taskArray} from './logic';
-import {eachDayOfInterval, format, addDays, differenceInBusinessDays, differenceInDays} from 'date-fns';
+import {eachDayOfInterval, format, addDays} from 'date-fns';
 
 export default function generateUI() {
     const pages = (title, icon, link) => {

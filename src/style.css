@@ -99,7 +99,7 @@ ul {
 .tab,
 button,
 .close-button,
-.edit-btn,
+.details-btn,
 .delete-btn,
 .completed {
     cursor: pointer;
@@ -271,7 +271,7 @@ button[type='button'] {
     margin-top: 10px;
 }
 
-.edit-btn:hover {
+.details-btn:hover {
     color: var(--main-color);
 }
 

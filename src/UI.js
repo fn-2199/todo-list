@@ -150,15 +150,15 @@ export default function generateUI() {
                         let deleteBtn = document.createElement('span');
                         deleteBtn.classList.add('material-icons-round', 'delete-btn');
                         deleteBtn.textContent = 'delete';
-                        deleteBtn.onclick = function() {console.log('Delete')};
+                        deleteBtn.onclick = deleteTask;
                         div.appendChild(deleteBtn);
                         break;
                     case 'description':
-                        let editBtn = document.createElement('span');
-                        editBtn.classList.add('material-icons-round', 'edit-btn');
-                        editBtn.textContent = 'edit';
-                        editBtn.onclick = function() {console.log('Edit')};
-                        div.appendChild(editBtn);
+                        let detailsBtn = document.createElement('span');
+                        detailsBtn.classList.add('material-icons-round', 'details-btn');
+                        detailsBtn.textContent = 'read_more';
+                        detailsBtn.onclick = function() {console.log('Details')};
+                        div.appendChild(detailsBtn);
                         break;
                     case 'id':
                         div.id = value;
@@ -185,6 +185,13 @@ export default function generateUI() {
         }
         if (taskContainer.textContent == '') {noTaskMsg(taskContainer)};
         main.append(tabTitle, taskContainer);
+    }
+
+    function deleteTask() {
+        // Remove logically
+        taskArray.splice(taskArray.findIndex((task) => task.id == this.parentNode.id), 1);
+        // Remove display
+        (this.parentNode).remove();
     }
 
     // Generate Modal

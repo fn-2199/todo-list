@@ -1,8 +1,17 @@
 import './style.css';
-import {taskCounter, projectsArray, taskObject, taskArray} from './logic';
+import {projectsArray, taskObject, taskArray} from './logic';
 import {eachDayOfInterval, format, addDays, differenceInBusinessDays} from 'date-fns';
 
 export default function generateUI() {
+
+    // if (localStorage.cachedTasks) {
+    //     taskArray = JSON.parse(localStorage.getItem("cachedTasks"));
+    // }
+
+    // if (localStorage.cachedProjects) {
+    //     projectsArray = JSON.parse(localStorage.getItem("cachedProjects"));
+    // }
+    
     // Factory Function for Tab Creation
     const pages = (title, icon, link) => {
         return {title, icon, link};
@@ -90,6 +99,9 @@ export default function generateUI() {
         const newProject = pages(projectName, 'list', generateTab); //Creates Tab Object
         projectsPagesArray.splice(-1, 0, newProject); //Appends it to Projects Category
         displayTabs(categoryNodeList[1], [newProject]);
+
+        // Update cachedProjects
+        // localStorage.setItem("cachedProjects", JSON.stringify(projectsArray));
     }
 
     // Add New Task Button Function
@@ -101,6 +113,9 @@ export default function generateUI() {
         const project = document.getElementsByName("project")[0].value;
 
         taskArray.push(taskObject(title, description, dueDate, priority, project));
+
+        // Update cachedTasks
+        localStorage.setItem("cachedTasks", JSON.stringify(taskArray));
     }
 
     function upcomingDates() {
@@ -153,7 +168,9 @@ export default function generateUI() {
 
     function changeStatus() {
         taskArray.find((task) => task.id == this.parentNode.id).completed = this.checked;
-        console.log(taskArray);
+
+        // Update cachedTasks
+        // localStorage.setItem("cachedTasks", JSON.stringify(taskArray));
     }
 
     function activateEffect() {
@@ -255,31 +272,26 @@ export default function generateUI() {
 
         // Remove logically
         const deletedTab = e.target.parentNode.previousSibling.textContent;
-        projectsArray.splice(projectsArray.indexOf(deletedTab), 1);
-        for (let i = 0; i < taskArray.length; i++) {
+        projectsArray.splice(projectsArray.indexOf(deletedTab), 1); //Removes from projectsArray
+        for (let i = 0; i < taskArray.length; i++) { //Removes all associated tasks
             if (taskArray[i].project == deletedTab) {taskArray.splice(i, 1)}
         }
 
         // Remove display
-        for (let tabNode of tabsNodeList){
-            if (e.target.parentNode.parentNode == tabNode) {
-                (e.target.parentNode.parentNode).remove();
-                break;
-            }
-        }
+        (tabsNodeList.find((tabNode) => tabNode == e.target.parentNode.parentNode)).remove();
+
+        // Redirect to Today Tab
+        generateTab.call(homePagesArray[1]);
     }
 
     // Generate Modal
     const modalBg = document.createElement('div');
     modalBg.classList.add('modal');
-
     const modalContainer = document.createElement('div');
     modalContainer.classList.add('modal-content');
-
     const exitBtn = document.createElement('span');
     exitBtn.classList.add('close-button');
     exitBtn.textContent = '×';
-
     modalContainer.append(exitBtn);
     modalBg.append(modalContainer);
 

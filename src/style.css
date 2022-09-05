@@ -285,18 +285,23 @@ button[type='button'] {
     border-radius: 5px;
     padding: 10px;
     justify-content: space-around;
-    align-items: center;
+    /* align-items: center; */
 }
 
 .details-div > span {
     flex: 1;
-    gap: 5px;
 }
 
-.details-div h3 {
+.detail-title {
     font-weight: bold;
     font-size: inherit;
+    border-bottom: 1px dotted var(--medium-grey);
+    padding-bottom: 5px;
 
+}
+
+.detail-info {
+    margin-top: 5px;
 }
 
 .details-btn:hover,

@@ -266,8 +266,8 @@ export default function generateUI() {
                 element.setAttribute('maxlength', '20');
             };
             if (widget.element == 'textarea') {
-                element.setAttribute('maxlength', '100');
-                element.placeholder = "100 characters maximum";
+                element.setAttribute('maxlength', '140');
+                element.placeholder = "140 characters maximum";
             };
 
             if (widget.element == 'input') {

@@ -166,7 +166,9 @@ export default function generateUI() {
                         div.id = value;
                         break;
                     case 'priority':
-                        div.style.borderLeft = (value == 'High') ? 'thick solid var(--secondary-color)' : (value == 'Medium') ? 'thick solid var(--main-color)' : 'thick solid green';
+                        div.style.borderLeft = (value == 'High') ? 'thick solid var(--secondary-color)' :
+                         (value == 'Medium') ? 'thick solid var(--main-color)'                          :
+                         'thick solid green';
                         break;
                     case 'completed':
                         const checkBox = document.createElement('input');

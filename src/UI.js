@@ -41,6 +41,7 @@ export default function generateUI() {
     let taskContainerNode;
 
     let noTaskMsg = "You do not have any task."
+    const sevenDaysArray = (eachDayOfInterval({ start: addDays(new Date(), 1), end: addDays(new Date(), 7) })).map((date) => format(date, 'yyyy-MM-dd'));
 
     // Generate Main Layout Components
     const header = document.createElement('header');
@@ -111,21 +112,15 @@ export default function generateUI() {
 
         // Remove logically
         const deletedTab = e.target.parentNode.previousSibling.textContent;
-        projectsArray.splice(projectsArray.indexOf(deletedTab), 1); //Removes from projectsArray
-        for (let i = 0; i < taskArray.length; i++) { //Removes all associated tasks
+        projectsArray.splice(projectsArray.indexOf(deletedTab), 1); // Removes from projectsArray
+        projectsPagesArray.splice(projectsPagesArray.findIndex((projectObj) => projectObj.title == deletedTab), 1); // Removes from projectsPagesArray
+        for (let i = 0; i < taskArray.length; i++) { //Removes all associated task
             if (taskArray[i].project == deletedTab) {taskArray.splice(i, 1)}
         }
-
         // Remove project display
         (tabsNodeList.find((tabNode) => tabNode == e.target.parentNode.parentNode)).remove();
-
         // Redirect to Today Tab
         generateTab.call(homePagesArray[1]);
-    }
-
-    function upcomingDates() {
-        let sevenDaysArray = (eachDayOfInterval({ start: addDays(new Date(), 1), end: addDays(new Date(), 7) })).map((date) => format(date, 'yyyy-MM-dd'));
-        return sevenDaysArray;
     }
 
     // Generate Tab Page
@@ -139,7 +134,7 @@ export default function generateUI() {
         taskContainerNode = taskContainer;
 
         const tabArray = (this.title == 'Today') ? taskArray.filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd')) :
-        (this.title == 'Upcoming') ? taskArray.filter((task) => upcomingDates().includes(task.dueDate)) : taskArray.filter((task) => task.project == this.title);
+        (this.title == 'Upcoming') ? taskArray.filter((task) => sevenDaysArray.includes(task.dueDate)) : taskArray.filter((task) => task.project == this.title);
 
         displayTaskUI(taskContainer, tabArray);
 
@@ -241,8 +236,7 @@ export default function generateUI() {
             const element = document.createElement(`${widget.element}`);
             element.name = widget.camelCase;
 
-            if (['taskTitle', 'projectName'].includes(widget.camelCase)) element.setAttribute('required', '');
-
+            if (widget.misc == 'text') element.setAttribute('required', '');
             if (widget.camelCase == 'projectName') element.oninput = checkProjectName;
 
             if (widget.element == 'input') {
@@ -290,7 +284,6 @@ export default function generateUI() {
     // Add Project Button Function
     function addProject() {
         const projectName = document.getElementsByName("projectName")[0].value;
-
         // Append project logically
         projectsArray.push(projectName);
         projectsPagesArray.push(pages(projectName, 'list', generateTab));
@@ -305,13 +298,14 @@ export default function generateUI() {
         const dueDate = (document.getElementsByName("dueDate")[0].value) ? document.getElementsByName("dueDate")[0].value : 'No Due Date';
         const priority = document.getElementsByName("priority")[0].value;
         const project = document.getElementsByName("project")[0].value;
-
         // Append task logically
         taskArray.push(taskObject(title, description, dueDate, priority, project));
-        // Remove Message
-        if (taskContainerNode.textContent == noTaskMsg) taskContainerNode.textContent = '';
-        // Display task UI
-        if (project == this.firstChild.textContent) {displayTaskUI(taskContainerNode, [taskArray[taskArray.length - 1]])};
+        if (project == this.firstChild.textContent) {
+            // Remove Message
+            if (taskContainerNode.textContent == noTaskMsg) taskContainerNode.textContent = '';
+             // Display task UI
+            displayTaskUI(taskContainerNode, [taskArray[taskArray.length - 1]])
+        };
     }
 
     // Generate Main Tab

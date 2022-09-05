@@ -294,9 +294,8 @@ export default function generateUI() {
         // Append project logically
         projectsArray.push(projectName);
         projectsPagesArray.push(pages(projectName, 'list', generateTab));
-
         // Display project UI
-        displayTabs(categoryNodeList[1], [pages(projectName, 'list', generateTab)]);
+        displayTabs(categoryNodeList[1], [projectsPagesArray[projectsPagesArray.length - 1]]);
     }
 
     // Add New Task Button Function
@@ -309,12 +308,10 @@ export default function generateUI() {
 
         // Append task logically
         taskArray.push(taskObject(title, description, dueDate, priority, project));
-
         // Remove Message
         if (taskContainerNode.textContent == noTaskMsg) taskContainerNode.textContent = '';
-
         // Display task UI
-        if (project == this.firstChild.textContent) {displayTaskUI(taskContainerNode, [taskObject(title, description, dueDate, priority, project)])};
+        if (project == this.firstChild.textContent) {displayTaskUI(taskContainerNode, [taskArray[taskArray.length - 1]])};
     }
 
     // Generate Main Tab

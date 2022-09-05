@@ -66,13 +66,6 @@ nav {
     grid-row: 2/-1;
     grid-column: 1/2;
     padding: 25px;
-    
-    /* Animation */
-    transition: 0.5s;
-}
-
-nav > * {
-    transition: 0.3s;
 }
 
 #home h2,
@@ -285,7 +278,6 @@ button[type='button'] {
     border-radius: 5px;
     padding: 10px;
     justify-content: space-around;
-    /* align-items: center; */
 }
 
 .details-div > span {

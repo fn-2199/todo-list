@@ -159,7 +159,7 @@ export default function generateUI() {
                         let detailsBtn = document.createElement('span');
                         detailsBtn.classList.add('material-icons-round', 'details-btn');
                         detailsBtn.textContent = 'read_more';
-                        detailsBtn.onclick = function() {console.log('Details')};
+                        detailsBtn.onclick = toggleDetails;
                         div.appendChild(detailsBtn);
                         break;
                     case 'id':
@@ -185,7 +185,24 @@ export default function generateUI() {
                         div.appendChild(span);
                 }
             }
-            nodeContainer.appendChild(div);
+
+            const detailsContainer = document.createElement('div');
+            detailsContainer.classList.add('details-div');
+
+            ['Description', 'Project', 'Priority'].forEach((key) => {
+                const keyValue = document.createElement('span');
+                const title = document.createElement('h3');
+                title.classList.add('detail-title');
+                title.textContent = key;
+                const detail = document.createElement('p');
+                detail.classList.add('detail-info');
+                detail.textContent = task[key.toLowerCase()];
+                keyValue.append(title, detail);
+                detailsContainer.appendChild(keyValue);
+                detailsContainer.style.display = 'none';
+            })
+
+            nodeContainer.append(div, detailsContainer);
         }
     }
 
@@ -196,6 +213,11 @@ export default function generateUI() {
         (this.parentNode).remove();
         // Display Message
         if (taskContainerNode.textContent == '') taskContainerNode.textContent = noTaskMsg;
+    }
+
+    function toggleDetails() {
+        this.classList.toggle('details-selected');
+        (this.parentNode.nextSibling.style.display === "none") ? this.parentNode.nextSibling.style.display  = "flex" : this.parentNode.nextSibling.style.display  = "none";
     }
 
     // Generate Modal
@@ -239,7 +261,14 @@ export default function generateUI() {
             element.name = widget.camelCase;
 
             if (widget.misc == 'text') element.setAttribute('required', '');
-            if (widget.camelCase == 'projectName') element.oninput = checkProjectName;
+            if (widget.camelCase == 'projectName') {
+                element.oninput = checkProjectName;
+                element.setAttribute('maxlength', '20');
+            };
+            if (widget.element == 'textarea') {
+                element.setAttribute('maxlength', '100');
+                element.placeholder = "100 characters maximum";
+            };
 
             if (widget.element == 'input') {
                 element.type = widget.misc;
@@ -296,7 +325,7 @@ export default function generateUI() {
     // Add New Task Button Function
     function addNewTask() {
         const title = document.getElementsByName("taskTitle")[0].value;
-        const description = document.getElementsByName("taskDescription")[0].value;
+        const description = (document.getElementsByName("taskDescription")[0].value) ? (document.getElementsByName("taskDescription")[0].value) : 'N/A';
         const dueDate = (document.getElementsByName("dueDate")[0].value) ? document.getElementsByName("dueDate")[0].value : 'No Due Date';
         const priority = document.getElementsByName("priority")[0].value;
         const project = document.getElementsByName("project")[0].value;

@@ -3,6 +3,7 @@
 body,
 h1,
 h2,
+h3,
 p,
 ul,
 li {
@@ -138,6 +139,9 @@ main h2 {
 
 .delete{
     margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
 }
 
@@ -269,8 +273,6 @@ button[type='button'] {
     padding: 10px;
     display: flex;
     align-items: center;
-    /* justify-content: space-between; */
-    /* border-bottom: 1px solid var(--dark-color); */
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
@@ -278,7 +280,27 @@ button[type='button'] {
     margin-top: 10px;
 }
 
-.details-btn:hover {
+.details-div {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    border-radius: 5px;
+    padding: 10px;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.details-div > span {
+    flex: 1;
+    gap: 5px;
+}
+
+.details-div h3 {
+    font-weight: bold;
+    font-size: inherit;
+
+}
+
+.details-btn:hover,
+.details-selected {
     color: var(--main-color);
 }
 

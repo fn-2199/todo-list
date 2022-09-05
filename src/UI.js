@@ -23,10 +23,6 @@ export default function generateUI() {
         for (let tab of tabsNodeList) (this.title == tab.firstChild.nextSibling.textContent) ? tab.classList.add('selected') : tab.classList.remove('selected');
     }
 
-    function noTaskMsg(element) {
-        element.textContent = "You do not have any task.";
-    }
-
     // Arrays
     const homePagesArray = [pages('Inbox', 'inbox', generateTab), pages('Today', 'today', generateTab), pages('Upcoming', 'date_range', generateTab)];
     let projectsPagesArray = [pages('Add Project', 'add', generateForm)];
@@ -42,6 +38,9 @@ export default function generateUI() {
     let tabsNodeList = [];
     let categoryNodeList = [];
     let addProjectNode;
+    let taskContainerNode;
+
+    let noTaskMsg = "You do not have any task."
 
     // Generate Main Layout Components
     const header = document.createElement('header');
@@ -117,7 +116,7 @@ export default function generateUI() {
             if (taskArray[i].project == deletedTab) {taskArray.splice(i, 1)}
         }
 
-        // Remove display
+        // Remove project display
         (tabsNodeList.find((tabNode) => tabNode == e.target.parentNode.parentNode)).remove();
 
         // Redirect to Today Tab
@@ -137,10 +136,18 @@ export default function generateUI() {
         tabTitle.textContent = this.title;
         const taskContainer = document.createElement('div');
         taskContainer.classList.add('task-container');
+        taskContainerNode = taskContainer;
 
         const tabArray = (this.title == 'Today') ? taskArray.filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd')) :
         (this.title == 'Upcoming') ? taskArray.filter((task) => upcomingDates().includes(task.dueDate)) : taskArray.filter((task) => task.project == this.title);
 
+        displayTaskUI(taskContainer, tabArray);
+
+        if (taskContainer.textContent == '') {taskContainer.textContent = noTaskMsg};
+        main.append(tabTitle, taskContainer);
+    }
+
+    function displayTaskUI(nodeContainer, tabArray) {
         for (let task of tabArray) {
             const div = document.createElement('div');
             div.classList.add('task-div');
@@ -181,10 +188,8 @@ export default function generateUI() {
                         div.appendChild(span);
                 }
             }
-            taskContainer.appendChild(div);
+            nodeContainer.appendChild(div);
         }
-        if (taskContainer.textContent == '') {noTaskMsg(taskContainer)};
-        main.append(tabTitle, taskContainer);
     }
 
     function deleteTask() {
@@ -192,6 +197,8 @@ export default function generateUI() {
         taskArray.splice(taskArray.findIndex((task) => task.id == this.parentNode.id), 1);
         // Remove display
         (this.parentNode).remove();
+        // Display Message
+        if (taskContainerNode.textContent == '') taskContainerNode.textContent = noTaskMsg;
     }
 
     // Generate Modal
@@ -266,7 +273,7 @@ export default function generateUI() {
         // Submit Button Function
         modalForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            (e.target.id == 'addprojectForm') ? addProject() : addNewTask();
+            (e.target.id == 'addprojectForm') ? addProject() : addNewTask.call(main);
             closeModal();
         });
 
@@ -277,10 +284,13 @@ export default function generateUI() {
     // Add Project Button Function
     function addProject() {
         const projectName = document.getElementsByName("projectName")[0].value;
+
+        // Append project logically
         projectsArray.push(projectName);
-        const newProject = pages(projectName, 'list', generateTab);
-        // projectsPagesArray.push(newProject); //Appends it to Projects Category
-        displayTabs(categoryNodeList[1], [newProject]);
+        projectsPagesArray.push(pages(projectName, 'list', generateTab));
+
+        // Display project UI
+        displayTabs(categoryNodeList[1], [pages(projectName, 'list', generateTab)]);
     }
 
     // Add New Task Button Function
@@ -290,7 +300,15 @@ export default function generateUI() {
         const dueDate = (document.getElementsByName("dueDate")[0].value) ? document.getElementsByName("dueDate")[0].value : 'No Due Date';
         const priority = document.getElementsByName("priority")[0].value;
         const project = document.getElementsByName("project")[0].value;
+
+        // Append task logically
         taskArray.push(taskObject(title, description, dueDate, priority, project));
+
+        // Remove Message
+        if (taskContainerNode.textContent == noTaskMsg) taskContainerNode.textContent = '';
+
+        // Display task UI
+        if (project == this.firstChild.textContent) {displayTaskUI(taskContainerNode, [taskObject(title, description, dueDate, priority, project)])};
     }
 
     // Generate Main Tab

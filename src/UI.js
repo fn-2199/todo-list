@@ -243,6 +243,8 @@ export default function generateUI() {
 
             if (['taskTitle', 'projectName'].includes(widget.camelCase)) element.setAttribute('required', '');
 
+            if (widget.camelCase == 'projectName') element.oninput = checkProjectName;
+
             if (widget.element == 'input') {
                 element.type = widget.misc;
             } else if (widget.element == 'select') {
@@ -280,6 +282,10 @@ export default function generateUI() {
         modalForm.appendChild(buttons);
         modalContainer.appendChild(modalForm);
     };
+
+    function checkProjectName() {
+        (projectsArray.includes(this.value)) ? this.setCustomValidity("Project name already exist.") : this.setCustomValidity("");
+    }
 
     // Add Project Button Function
     function addProject() {

@@ -88,6 +88,25 @@ export default function generateUI() {
             (tab.icon == 'add') ? addProjectNode = tabKey : tabsNodeList.push(tabKey);
 
             if (nodeContainer.contains(addProjectNode)) {
+                // let currentTabName = tabName.textContent;
+                // tabName.ondblclick = tabName.contentEditable = true;
+                // tabName.addEventListener('input', function() {
+
+                //     // Update ProjectsArray
+                //     let currentProjName = projectsArray.indexOf(tabName.textContent);
+                //     projectsArray.splice(currentProjName, 1, this.textContent);
+
+                //     // Update projectsPagesArray
+                //     projectsPagesArray.splice(projectsPagesArray.findIndex((projPage) => {projPage.project == currentProjName}), 1, pages(this.textContent, 'list', generateTab));
+                //     console.log(projectsPagesArray);
+
+                //     // Update associated tasks
+                //     for (let i = 0; i < taskArray.length; i++) {
+                //         if (taskArray[i].project == currentTabName) {
+                //             taskArray[i].project = this.textContent;
+                //         }
+                //     }
+                // })
                 generateDelete(tabKey); 
                 nodeContainer.insertBefore(tabKey, addProjectNode);
             } else {nodeContainer.appendChild(tabKey)};

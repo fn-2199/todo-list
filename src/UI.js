@@ -16,7 +16,7 @@ export default function generateUI() {
     }
 
     function changeStatus() {
-        taskArray.find((task) => task.id == this.parentNode.id).completed = this.checked;
+        taskArray.find((task) => task.id == this.parentNode.parentNode.id).completed = this.checked;
     }
 
     function selectedTab() {
@@ -28,6 +28,7 @@ export default function generateUI() {
     let projectsPagesArray = [pages('Add Project', 'add', generateForm)];
     const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
     const headerArray = [pages('Menu', 'menu', toggleNav), pages('Add New Task', 'add', generateForm)];
+    const taskIconArrays = [pages('details-btn', 'read_more', toggleDetails), pages('edit-btn', 'edit', editTask), pages('delete-btn', 'delete', deleteTask)];
 
     // Modal Form Arrays
     const priorityArray = ['Low', 'Medium', 'High'];
@@ -88,25 +89,6 @@ export default function generateUI() {
             (tab.icon == 'add') ? addProjectNode = tabKey : tabsNodeList.push(tabKey);
 
             if (nodeContainer.contains(addProjectNode)) {
-                // let currentTabName = tabName.textContent;
-                // tabName.ondblclick = tabName.contentEditable = true;
-                // tabName.addEventListener('input', function() {
-
-                //     // Update ProjectsArray
-                //     let currentProjName = projectsArray.indexOf(tabName.textContent);
-                //     projectsArray.splice(currentProjName, 1, this.textContent);
-
-                //     // Update projectsPagesArray
-                //     projectsPagesArray.splice(projectsPagesArray.findIndex((projPage) => {projPage.project == currentProjName}), 1, pages(this.textContent, 'list', generateTab));
-                //     console.log(projectsPagesArray);
-
-                //     // Update associated tasks
-                //     for (let i = 0; i < taskArray.length; i++) {
-                //         if (taskArray[i].project == currentTabName) {
-                //             taskArray[i].project = this.textContent;
-                //         }
-                //     }
-                // })
                 generateDelete(tabKey); 
                 nodeContainer.insertBefore(tabKey, addProjectNode);
             } else {nodeContainer.appendChild(tabKey)};
@@ -165,29 +147,17 @@ export default function generateUI() {
         for (let task of tabArray) {
             const div = document.createElement('div');
             div.classList.add('task-div');
+
+            const mainDiv = document.createElement('div');
+            mainDiv.classList.add('main-div');
+
+            const detailsDiv = document.createElement('div');
+            detailsDiv.classList.add('details-div');
+
             for (let [key, value] of Object.entries(task)) {
                 switch (key) {
-                    case 'project':
-                        let deleteBtn = document.createElement('span');
-                        deleteBtn.classList.add('material-icons-round', 'delete-btn');
-                        deleteBtn.textContent = 'delete';
-                        deleteBtn.onclick = deleteTask;
-                        div.appendChild(deleteBtn);
-                        break;
-                    case 'description':
-                        let detailsBtn = document.createElement('span');
-                        detailsBtn.classList.add('material-icons-round', 'details-btn');
-                        detailsBtn.textContent = 'read_more';
-                        detailsBtn.onclick = toggleDetails;
-                        div.appendChild(detailsBtn);
-                        break;
                     case 'id':
                         div.id = value;
-                        break;
-                    case 'priority':
-                        div.style.borderLeft = (value == 'High') ? 'thick solid var(--secondary-color)' :
-                         (value == 'Medium') ? 'thick solid var(--main-color)'                          :
-                         'thick solid green';
                         break;
                     case 'completed':
                         const checkBox = document.createElement('input');
@@ -195,46 +165,59 @@ export default function generateUI() {
                         checkBox.checked = value;
                         checkBox.classList.add(`${key}`);
                         checkBox.addEventListener('change', changeStatus);
-                        div.appendChild(checkBox);
+                        mainDiv.appendChild(checkBox);
+                        break;
+                    case 'priority':
+                        div.style.borderLeft = (value == 'High') ? 'thick solid var(--secondary-color)' : (value == 'Medium') ? 'thick solid var(--main-color)' : 'thick solid green';
+                    case 'description':
+                    case 'project':
+                        const keyValue = document.createElement('span');
+                        const title = document.createElement('h3');
+                        title.classList.add('detail-title');
+                        title.textContent = key;
+                        const detail = document.createElement('p');
+                        detail.classList.add('detail-info');
+                        detail.textContent = task[key.toLowerCase()];
+                        keyValue.append(title, detail);
+                        detailsDiv.appendChild(keyValue);
+                        detailsDiv.style.display = 'none';
                         break;
                     default:
                         const span = document.createElement('span');
                         span.textContent = value;
                         span.classList.add(`${key}`);
-                        div.appendChild(span);
+                        mainDiv.appendChild(span);
                 }
             }
 
-            const detailsContainer = document.createElement('div');
-            detailsContainer.classList.add('details-div');
-
-            ['Description', 'Project', 'Priority'].forEach((key) => {
-                const keyValue = document.createElement('span');
-                const title = document.createElement('h3');
-                title.classList.add('detail-title');
-                title.textContent = key;
-                const detail = document.createElement('p');
-                detail.classList.add('detail-info');
-                detail.textContent = task[key.toLowerCase()];
-                keyValue.append(title, detail);
-                detailsContainer.appendChild(keyValue);
-                detailsContainer.style.display = 'none';
+            taskIconArrays.forEach((key) => {
+                let icon = document.createElement('span');
+                icon.classList.add('material-icons-round', `${key.title}`);
+                icon.textContent = `${key.icon}`;
+                icon.onclick = key.link;
+                mainDiv.appendChild(icon);
             })
 
-            nodeContainer.append(div, detailsContainer);
+            div.append(mainDiv, detailsDiv);
+            nodeContainer.appendChild(div);
         }
+    }
+
+    function editTask() {
+        
     }
 
     function deleteTask() {
         // Remove logically
-        taskArray.splice(taskArray.findIndex((task) => task.id == this.parentNode.id), 1);
+        taskArray.splice(taskArray.findIndex((task) => task.id == this.parentNode.parentNode.id), 1);
         // Remove display
-        (this.parentNode).remove();
+        (this.parentNode.parentNode).remove();
         // Display Message
         if (taskContainerNode.textContent == '') taskContainerNode.textContent = noTaskMsg;
     }
 
     function toggleDetails() {
+        console.log(this);
         this.classList.toggle('details-selected');
         (this.parentNode.nextSibling.style.display === "none") ? this.parentNode.nextSibling.style.display  = "flex" : this.parentNode.nextSibling.style.display  = "none";
     }

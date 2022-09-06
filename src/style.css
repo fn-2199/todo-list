@@ -100,8 +100,7 @@ ul {
 .tab,
 button,
 .close-button,
-.details-btn,
-.delete-btn,
+.main-div > .material-icons-round,
 .completed {
     cursor: pointer;
 }
@@ -264,9 +263,16 @@ button[type='button'] {
 
 .task-div {
     padding: 10px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.main-div {
     display: flex;
     align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.main-div > * {
+    margin-left: 5px;
 }
 
 .task-container div ~ div {
@@ -274,9 +280,7 @@ button[type='button'] {
 }
 
 .details-div {
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-    border-radius: 5px;
-    padding: 10px;
+    padding-top: 10px;
     justify-content: space-around;
 }
 
@@ -298,6 +302,10 @@ button[type='button'] {
 
 .details-btn:hover,
 .details-selected {
+    color: green;
+}
+
+.edit-btn:hover {
     color: var(--main-color);
 }
 

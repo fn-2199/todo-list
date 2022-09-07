@@ -28,7 +28,7 @@ export default function generateUI() {
     let projectsPagesArray = [pages('Add Project', 'add', generateForm)];
     const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
     const headerArray = [pages('Menu', 'menu', toggleNav), pages('Add New Task', 'add', generateForm)];
-    const taskIconArrays = [pages('details-btn', 'read_more', toggleDetails), pages('edit-btn', 'edit', editTask), pages('delete-btn', 'delete', deleteTask)];
+    const taskOptionArray = [pages('details-btn', 'read_more', toggleDetails), pages('edit-btn', 'edit', editTask), pages('delete-btn', 'delete', deleteTask)];
 
     // Modal Form Arrays
     const priorityArray = ['Low', 'Medium', 'High'];
@@ -138,7 +138,7 @@ export default function generateUI() {
         (this.title == 'Upcoming') ? taskArray.filter((task) => sevenDaysArray.includes(task.dueDate)) : taskArray.filter((task) => task.project == this.title);
 
         displayTaskUI(taskContainer, tabArray);
-
+    
         if (taskContainer.textContent == '') {taskContainer.textContent = noTaskMsg};
         main.append(tabTitle, taskContainer);
     }
@@ -147,10 +147,8 @@ export default function generateUI() {
         for (let task of tabArray) {
             const div = document.createElement('div');
             div.classList.add('task-div');
-
             const mainDiv = document.createElement('div');
             mainDiv.classList.add('main-div');
-
             const detailsDiv = document.createElement('div');
             detailsDiv.classList.add('details-div');
 
@@ -173,11 +171,9 @@ export default function generateUI() {
                     case 'project':
                         const keyValue = document.createElement('span');
                         const title = document.createElement('h3');
-                        title.classList.add('detail-title');
                         title.textContent = key;
                         const detail = document.createElement('p');
-                        detail.classList.add('detail-info');
-                        detail.textContent = task[key.toLowerCase()];
+                        detail.textContent = value;
                         keyValue.append(title, detail);
                         detailsDiv.appendChild(keyValue);
                         detailsDiv.style.display = 'none';
@@ -190,7 +186,7 @@ export default function generateUI() {
                 }
             }
 
-            taskIconArrays.forEach((key) => {
+            taskOptionArray.forEach((key) => {
                 let icon = document.createElement('span');
                 icon.classList.add('material-icons-round', `${key.title}`);
                 icon.textContent = `${key.icon}`;
@@ -204,7 +200,7 @@ export default function generateUI() {
     }
 
     function editTask() {
-        
+
     }
 
     function deleteTask() {
@@ -262,25 +258,30 @@ export default function generateUI() {
             const element = document.createElement(`${widget.element}`);
             element.name = widget.camelCase;
 
-            if (widget.misc == 'text') element.setAttribute('required', '');
-            if (widget.camelCase == 'projectName') {
-                element.oninput = checkProjectName;
-                element.setAttribute('maxlength', '20');
-            };
-            if (widget.element == 'textarea') {
-                element.setAttribute('maxlength', '140');
-                element.placeholder = "140 characters maximum";
-            };
-
-            if (widget.element == 'input') {
-                element.type = widget.misc;
-            } else if (widget.element == 'select') {
-                for (let value of widget.misc) {
-                    const option = document.createElement('option');
-                    option.value = value;
-                    option.textContent = value;
-                    element.appendChild(option);
-                }
+            switch (widget.element) {
+                case 'input':
+                    element.type = widget.misc;
+                    switch (widget.camelCase) {
+                        case 'projectName':
+                            element.oninput = checkProjectName;
+                            element.setAttribute('maxlength', '20');
+                        case 'taskTitle':
+                            element.setAttribute('required', '');
+                            break;
+                    }
+                    break;
+                case 'textarea':
+                    element.setAttribute('maxlength', '140');
+                    element.placeholder = "140 characters maximum";
+                    break;
+                case 'select':
+                    for (let value of widget.misc) {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        option.textContent = value;
+                        element.appendChild(option);
+                    }
+                    break;
             }
 
             label.appendChild(element);
@@ -331,8 +332,10 @@ export default function generateUI() {
         const dueDate = (document.getElementsByName("dueDate")[0].value) ? document.getElementsByName("dueDate")[0].value : 'No Due Date';
         const priority = document.getElementsByName("priority")[0].value;
         const project = document.getElementsByName("project")[0].value;
+
         // Append task logically
         taskArray.push(taskObject(title, description, dueDate, priority, project));
+
         if (project == this.firstChild.textContent) {
             // Remove Message
             if (taskContainerNode.textContent == noTaskMsg) taskContainerNode.textContent = '';

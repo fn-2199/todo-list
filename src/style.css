@@ -115,6 +115,7 @@ main {
     flex-direction: column;
     text-align: center;
     padding: 40px;
+    overflow: auto;
 }
 
 main h2 {
@@ -307,7 +308,8 @@ button[type='button'] {
     color: green;
 }
 
-.edit-btn:hover {
+.edit-btn:hover,
+.edit-selected {
     color: var(--main-color);
 }
 

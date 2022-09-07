@@ -152,6 +152,8 @@ export default function generateUI() {
             const detailsDiv = document.createElement('div');
             detailsDiv.classList.add('details-div');
 
+            let editableNodeArray = [];
+
             for (let [key, value] of Object.entries(task)) {
                 switch (key) {
                     case 'id':
@@ -162,6 +164,7 @@ export default function generateUI() {
                         checkBox.setAttribute('type', 'checkbox');
                         checkBox.checked = value;
                         checkBox.classList.add(`${key}`);
+                        editableNodeArray.push(checkBox);
                         checkBox.addEventListener('change', changeStatus);
                         mainDiv.appendChild(checkBox);
                         break;
@@ -174,6 +177,8 @@ export default function generateUI() {
                         title.textContent = key;
                         const detail = document.createElement('p');
                         detail.textContent = value;
+                        detail.classList.add(`${key}`);
+                        editableNodeArray.push(detail);
                         keyValue.append(title, detail);
                         detailsDiv.appendChild(keyValue);
                         detailsDiv.style.display = 'none';
@@ -182,6 +187,7 @@ export default function generateUI() {
                         const span = document.createElement('span');
                         span.textContent = value;
                         span.classList.add(`${key}`);
+                        editableNodeArray.push(span);
                         mainDiv.appendChild(span);
                 }
             }
@@ -190,7 +196,7 @@ export default function generateUI() {
                 let icon = document.createElement('span');
                 icon.classList.add('material-icons-round', `${key.title}`);
                 icon.textContent = `${key.icon}`;
-                icon.onclick = key.link;
+                icon.onclick = (key.title == 'edit-btn') ? function() {(key.link.bind(icon))(editableNodeArray)}: key.link;
                 mainDiv.appendChild(icon);
             })
 
@@ -199,8 +205,10 @@ export default function generateUI() {
         }
     }
 
-    function editTask() {
-
+    function editTask(array) {
+        if (this.previousSibling.classList.contains('details-selected')) toggleDetails.call(this.previousSibling);
+        this.classList.toggle('edit-selected');
+        (this.parentNode.nextSibling.style.display === "none") ? this.parentNode.nextSibling.style.display  = "flex" : this.parentNode.nextSibling.style.display  = "none";
     }
 
     function deleteTask() {
@@ -213,7 +221,7 @@ export default function generateUI() {
     }
 
     function toggleDetails() {
-        console.log(this);
+        if (this.nextSibling.classList.contains('edit-selected')) editTask.call(this.nextSibling);
         this.classList.toggle('details-selected');
         (this.parentNode.nextSibling.style.display === "none") ? this.parentNode.nextSibling.style.display  = "flex" : this.parentNode.nextSibling.style.display  = "none";
     }

@@ -19,12 +19,8 @@ export default function generateUI() {
         taskArray.find((task) => task.id == this.parentNode.parentNode.id).completed = this.checked;
     }
 
-    function selectedTab() {
-        for (let tab of tabsNodeList) (this.title == tab.firstChild.nextSibling.textContent) ? tab.classList.add('selected') : tab.classList.remove('selected');
-    }
-
     // Arrays
-    const homePagesArray = [pages('Inbox', 'inbox', generateTab), pages('Today', 'today', generateTab), pages('Upcoming', 'date_range', generateTab)];
+    const homePagesArray = [pages('Inbox', 'inbox', generatePage), pages('Today', 'today', generatePage), pages('Upcoming', 'date_range', generatePage)];
     let projectsPagesArray = [pages('Add Project', 'add', generateForm)];
     const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
     const headerArray = [pages('Menu', 'menu', toggleNav), pages('Add New Task', 'add', generateForm)];
@@ -41,6 +37,8 @@ export default function generateUI() {
     let addProjectNode;
     let taskContainerNode;
 
+    // Variables
+    let currentActivePage;
     let noTaskMsg = "You do not have any task."
     const sevenDaysArray = (eachDayOfInterval({ start: addDays(new Date(), 1), end: addDays(new Date(), 7) })).map((date) => format(date, 'yyyy-MM-dd'));
 
@@ -73,7 +71,7 @@ export default function generateUI() {
         displayTabs(catContainer, cat.subcategory);
     })
 
-    // Generate Tabs
+    // Generate Side Tabs
     function displayTabs(nodeContainer, array) {
         for (let tab of array) {
             const tabKey = document.createElement('li');
@@ -89,14 +87,14 @@ export default function generateUI() {
             (tab.icon == 'add') ? addProjectNode = tabKey : tabsNodeList.push(tabKey);
 
             if (nodeContainer.contains(addProjectNode)) {
-                generateDelete(tabKey); 
+                createProjDeleteBtn(tabKey); 
                 nodeContainer.insertBefore(tabKey, addProjectNode);
             } else {nodeContainer.appendChild(tabKey)};
         }
     }
 
     // Generate Tab's Delete Button
-    function generateDelete(node) {
+    function createProjDeleteBtn(node) {
         const deleteContainer = document.createElement('span');
         deleteContainer.classList.add('delete');
         const deleteBtn = document.createElement('span');
@@ -121,33 +119,35 @@ export default function generateUI() {
         // Remove project display
         (tabsNodeList.find((tabNode) => tabNode == e.target.parentNode.parentNode)).remove();
         // Redirect to Today Tab
-        generateTab.call(homePagesArray[1]);
+        generatePage.call(homePagesArray[1]);
     }
 
-    let currentTab;
-
     // Generate Tab Page
-    function generateTab() {
-        currentTab = this;
-        selectedTab.call(this);
+    function generatePage() {
+        currentActivePage = this;
+
+        // Selected Tab Effect
+        for (let tab of tabsNodeList) (this.title == tab.firstChild.nextSibling.textContent) ? tab.classList.add('selected') : tab.classList.remove('selected');
+        // Refresh Main Content
         main.textContent = '';
+
         const tabTitle = document.createElement('h2');
         tabTitle.textContent = this.title;
         const taskContainer = document.createElement('div');
         taskContainer.classList.add('task-container');
         taskContainerNode = taskContainer;
 
-        const tabArray = (this.title == 'Today') ? taskArray.filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd')) :
+        const pageTaskArray = (this.title == 'Today') ? taskArray.filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd')) :
         (this.title == 'Upcoming') ? taskArray.filter((task) => sevenDaysArray.includes(task.dueDate)) : taskArray.filter((task) => task.project == this.title);
 
-        displayTaskUI(taskContainer, tabArray);
+        displayTask(taskContainer, pageTaskArray);
     
         if (taskContainer.textContent == '') {taskContainer.textContent = noTaskMsg};
         main.append(tabTitle, taskContainer);
     }
 
-    function displayTaskUI(nodeContainer, tabArray) {
-        for (let task of tabArray) {
+    function displayTask(nodeContainer, array) {
+        for (let task of array) {
             const div = document.createElement('div');
             div.classList.add('task-div');
             const mainDiv = document.createElement('div');
@@ -155,7 +155,6 @@ export default function generateUI() {
             const detailsDiv = document.createElement('div');
             detailsDiv.classList.add('details-div');
 
-            let editableNodeArray = [];
 
             for (let [key, value] of Object.entries(task)) {
                 switch (key) {
@@ -167,12 +166,13 @@ export default function generateUI() {
                         checkBox.setAttribute('type', 'checkbox');
                         checkBox.checked = value;
                         checkBox.classList.add(`${key}`);
-                        editableNodeArray.push(checkBox);
                         checkBox.addEventListener('change', changeStatus);
                         mainDiv.appendChild(checkBox);
                         break;
                     case 'priority':
-                        div.style.borderLeft = (value == 'High') ? 'thick solid var(--secondary-color)' : (value == 'Medium') ? 'thick solid var(--main-color)' : 'thick solid green';
+                        div.style.borderLeft = (value == 'High') ? 'thick solid var(--secondary-color)' : 
+                        (value == 'Medium') ? 'thick solid var(--main-color)' :
+                        'thick solid green';
                     case 'description':
                     case 'project':
                         const keyValue = document.createElement('span');
@@ -181,7 +181,6 @@ export default function generateUI() {
                         const detail = document.createElement('p');
                         detail.textContent = value;
                         detail.classList.add(`${key}`);
-                        editableNodeArray.push(detail);
                         keyValue.append(title, detail);
                         detailsDiv.appendChild(keyValue);
                         detailsDiv.style.display = 'none';
@@ -190,15 +189,14 @@ export default function generateUI() {
                         const span = document.createElement('span');
                         span.textContent = value;
                         span.classList.add(`${key}`);
-                        editableNodeArray.push(span);
                         mainDiv.appendChild(span);
                 }
             }
 
             taskOptionArray.forEach((key) => {
                 let icon = document.createElement('span');
-                icon.classList.add('material-icons-round', `${key.title}`);
-                icon.textContent = `${key.icon}`;
+                icon.classList.add('material-icons-round', key.title);
+                icon.textContent = key.icon;
                 icon.onclick = (key.title == 'edit-btn') ? function() {(key.link.bind(icon))(div.id)}: key.link;
                 mainDiv.appendChild(icon);
             })
@@ -208,6 +206,7 @@ export default function generateUI() {
         }
     }
 
+    // TASK BUTTON OPTIONS
     function editTask(id) {
         if (this.previousSibling.classList.contains('details-selected')) toggleDetails.call(this.previousSibling);
         generateForm.call((taskArray.find((task) => task.id == id)));
@@ -223,7 +222,6 @@ export default function generateUI() {
     }
 
     function toggleDetails() {
-        if (this.nextSibling.classList.contains('edit-selected')) editTask.call(this.nextSibling);
         this.classList.toggle('details-selected');
         (this.parentNode.nextSibling.style.display === "none") ? this.parentNode.nextSibling.style.display  = "flex" : this.parentNode.nextSibling.style.display  = "none";
     }
@@ -253,7 +251,7 @@ export default function generateUI() {
         const modalForm = document.createElement('form');
         modalForm.action = '#';
         modalForm.method = 'post';
-        modalForm.id = (this.id) ? "editTaskForm": (this.title.replace(/\s/g, '')).toLowerCase() + 'Form';
+        modalForm.id = (this.id) ? "edittaskForm": (this.title.replace(/\s/g, '')).toLowerCase() + 'Form';
         const formTitle = document.createElement('h2');
         formTitle.textContent = (this.id) ? "Edit Task" : this.title;
         modalForm.appendChild(formTitle);
@@ -275,7 +273,7 @@ export default function generateUI() {
                     element.type = widget.misc;
                     switch (widget.camelCase) {
                         case 'projectName':
-                            element.oninput = checkProjectName;
+                            element.oninput = validateProjName;
                             element.setAttribute('maxlength', '20');
                         case 'title':
                             element.setAttribute('required', '');
@@ -295,7 +293,6 @@ export default function generateUI() {
                     }
                     break;
             }
-
             label.appendChild(element);
             widgetContainer.appendChild(label);
             modalForm.appendChild(widgetContainer);
@@ -336,12 +333,11 @@ export default function generateUI() {
 
     function updateTask() {
         for (let [key, value] of Object.entries(getFormValues())) {this[key] = value};
-        // Reload Active Tab
-        generateTab.call(currentTab);
+        generatePage.call(currentActivePage);
 
     }
 
-    function checkProjectName() {
+    function validateProjName() {
         (projectsArray.includes(this.value)) ? this.setCustomValidity("Project name already exist.") : this.setCustomValidity("");
     }
 
@@ -350,7 +346,7 @@ export default function generateUI() {
         const projectName = document.getElementsByName("projectName")[0].value;
         // Append project logically
         projectsArray.push(projectName);
-        projectsPagesArray.push(pages(projectName, 'list', generateTab));
+        projectsPagesArray.push(pages(projectName, 'list', generatePage));
         // Display project UI
         displayTabs(categoryNodeList[1], [projectsPagesArray[projectsPagesArray.length - 1]]);
     }
@@ -376,12 +372,12 @@ export default function generateUI() {
             // Remove Message
             if (taskContainerNode.textContent == noTaskMsg) taskContainerNode.textContent = '';
              // Display task UI
-            displayTaskUI(taskContainerNode, [taskArray[taskArray.length - 1]])
+            displayTask(taskContainerNode, [taskArray[taskArray.length - 1]])
         };
     }
 
     // Generate Main Tab
-    generateTab.call(homePagesArray[0]);
+    generatePage.call(homePagesArray[0]);
     
     document.body.append(header, menu, main, modalBg);
 };

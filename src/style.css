@@ -308,8 +308,7 @@ button[type='button'] {
     color: green;
 }
 
-.edit-btn:hover,
-.edit-selected {
+.edit-btn:hover {
     color: var(--main-color);
 }
 

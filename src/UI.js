@@ -361,16 +361,12 @@ export default function generateUI() {
 
     // Add New Task Button Function
     function addNewTask() {
-        const title = document.getElementsByName("title")[0].value;
-        const description = (document.getElementsByName("description")[0].value) ? (document.getElementsByName("description")[0].value) : 'N/A';
-        const dueDate = (document.getElementsByName("dueDate")[0].value) ? document.getElementsByName("dueDate")[0].value : 'No Due Date';
-        const priority = document.getElementsByName("priority")[0].value;
-        const project = document.getElementsByName("project")[0].value;
+        let newTask = getFormValues();
 
         // Append task logically
-        taskArray.push(taskObject(title, description, dueDate, priority, project));
+        taskArray.push(taskObject(newTask.title, newTask.description, newTask.dueDate, newTask.priority, newTask.project));
 
-        if (project == this.firstChild.textContent) {
+        if (newTask.project == this.firstChild.textContent) {
             // Remove Message
             if (taskContainerNode.textContent == noTaskMsg) taskContainerNode.textContent = '';
              // Display task UI

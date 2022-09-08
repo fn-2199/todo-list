@@ -124,8 +124,11 @@ export default function generateUI() {
         generateTab.call(homePagesArray[1]);
     }
 
+    let currentTab;
+
     // Generate Tab Page
     function generateTab() {
+        currentTab = this;
         selectedTab.call(this);
         main.textContent = '';
         const tabTitle = document.createElement('h2');
@@ -333,6 +336,9 @@ export default function generateUI() {
 
     function updateTask() {
         for (let [key, value] of Object.entries(getFormValues())) {this[key] = value};
+        // Reload Active Tab
+        generateTab.call(currentTab);
+
     }
 
     function checkProjectName() {

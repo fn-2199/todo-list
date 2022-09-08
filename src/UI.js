@@ -32,7 +32,7 @@ export default function generateUI() {
 
     // Modal Form Arrays
     const priorityArray = ['Low', 'Medium', 'High'];
-    const newTaskArray = [formElements('taskTitle', 'Title', 'input', 'text'), formElements('taskDescription', 'Description', 'textarea', ''), formElements('dueDate', 'Due Date', 'input', 'date'), formElements('priority', 'Priority', 'select', priorityArray), formElements('project', 'Project', 'select', projectsArray)];
+    const newTaskArray = [formElements('title', 'Title', 'input', 'text'), formElements('description', 'Description', 'textarea', ''), formElements('dueDate', 'Due Date', 'input', 'date'), formElements('priority', 'Priority', 'select', priorityArray), formElements('project', 'Project', 'select', projectsArray)];
     const newProject = [formElements('projectName', 'Name', 'input', 'text')];
 
     // Node References
@@ -56,7 +56,7 @@ export default function generateUI() {
     for (let item of headerArray) {
         const headerIcon = document.createElement('span');
         headerIcon.classList.add('material-icons-round', 'md-36');
-        headerIcon.id = headerIcon.textContent = item.icon;
+        headerIcon.textContent = item.icon;
         headerIcon.onclick = item.link.bind(item);
         (item.icon == 'menu') ? header.insertBefore(headerIcon, h1) : header.append(headerIcon);
     }
@@ -196,7 +196,7 @@ export default function generateUI() {
                 let icon = document.createElement('span');
                 icon.classList.add('material-icons-round', `${key.title}`);
                 icon.textContent = `${key.icon}`;
-                icon.onclick = (key.title == 'edit-btn') ? function() {(key.link.bind(icon))(editableNodeArray)}: key.link;
+                icon.onclick = (key.title == 'edit-btn') ? function() {(key.link.bind(icon))(div.id)}: key.link;
                 mainDiv.appendChild(icon);
             })
 
@@ -205,10 +205,9 @@ export default function generateUI() {
         }
     }
 
-    function editTask(array) {
+    function editTask(id) {
         if (this.previousSibling.classList.contains('details-selected')) toggleDetails.call(this.previousSibling);
-        this.classList.toggle('edit-selected');
-        (this.parentNode.nextSibling.style.display === "none") ? this.parentNode.nextSibling.style.display  = "flex" : this.parentNode.nextSibling.style.display  = "none";
+        generateForm.call((taskArray.find((task) => task.id == id)));
     }
 
     function deleteTask() {
@@ -251,12 +250,13 @@ export default function generateUI() {
         const modalForm = document.createElement('form');
         modalForm.action = '#';
         modalForm.method = 'post';
-        modalForm.id = (this.title.replace(/\s/g, '')).toLowerCase() + 'Form';
+        modalForm.id = (this.id) ? "editTaskForm": (this.title.replace(/\s/g, '')).toLowerCase() + 'Form';
         const formTitle = document.createElement('h2');
-        formTitle.textContent = this.title;
+        formTitle.textContent = (this.id) ? "Edit Task" : this.title;
         modalForm.appendChild(formTitle);
 
         const formArray = (this.title == 'Add Project') ? newProject : newTaskArray;
+        let nodeList = [];
 
         // Generate Form Elements
         for (let widget of formArray) {
@@ -265,6 +265,7 @@ export default function generateUI() {
             label.textContent = widget.stringLabel;
             const element = document.createElement(`${widget.element}`);
             element.name = widget.camelCase;
+            nodeList.push(element);
 
             switch (widget.element) {
                 case 'input':
@@ -273,7 +274,7 @@ export default function generateUI() {
                         case 'projectName':
                             element.oninput = checkProjectName;
                             element.setAttribute('maxlength', '20');
-                        case 'taskTitle':
+                        case 'title':
                             element.setAttribute('required', '');
                             break;
                     }
@@ -297,13 +298,24 @@ export default function generateUI() {
             modalForm.appendChild(widgetContainer);
         }
 
+        
+        // For Edit Task Form Only
+        let editTaskObject;
+
+        if (this.id) {
+            editTaskObject = this;
+            for (let node of nodeList) {
+                node.value = this[node.name]
+            }
+        }
+
         // Generate Buttons
         const buttons = document.createElement('div');
         buttons.classList.add('buttons');
         [{type: 'button', text: 'Cancel'}, {type: 'submit', text: `${this.title}`}].forEach((btn) => {
             const button = document.createElement('button');
             button.type = btn.type;
-            button.textContent = btn.text;
+            button.textContent = (this.id && btn.type == 'submit') ? "Edit Task" : btn.text;
             if (btn.type == 'button') {button.onclick = closeModal};
             buttons.appendChild(button);
         });
@@ -311,13 +323,17 @@ export default function generateUI() {
         // Submit Button Function
         modalForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            (e.target.id == 'addprojectForm') ? addProject() : addNewTask.call(main);
+            (e.target.id == 'addprojectForm') ? addProject() : (e.target.id == 'addnewtaskForm') ? addNewTask.call(main) : updateTask.call(editTaskObject);
             closeModal();
         });
 
         modalForm.appendChild(buttons);
         modalContainer.appendChild(modalForm);
     };
+
+    function updateTask() {
+        for (let [key, value] of Object.entries(getFormValues())) {this[key] = value};
+    }
 
     function checkProjectName() {
         (projectsArray.includes(this.value)) ? this.setCustomValidity("Project name already exist.") : this.setCustomValidity("");
@@ -333,10 +349,20 @@ export default function generateUI() {
         displayTabs(categoryNodeList[1], [projectsPagesArray[projectsPagesArray.length - 1]]);
     }
 
+    function getFormValues() {
+        const title = document.getElementsByName("title")[0].value;
+        const description = (document.getElementsByName("description")[0].value) ? (document.getElementsByName("description")[0].value) : 'N/A';
+        const dueDate = (document.getElementsByName("dueDate")[0].value) ? document.getElementsByName("dueDate")[0].value : 'No Due Date';
+        const priority = document.getElementsByName("priority")[0].value;
+        const project = document.getElementsByName("project")[0].value;
+
+        return {title, description, dueDate, priority, project};
+    }
+
     // Add New Task Button Function
     function addNewTask() {
-        const title = document.getElementsByName("taskTitle")[0].value;
-        const description = (document.getElementsByName("taskDescription")[0].value) ? (document.getElementsByName("taskDescription")[0].value) : 'N/A';
+        const title = document.getElementsByName("title")[0].value;
+        const description = (document.getElementsByName("description")[0].value) ? (document.getElementsByName("description")[0].value) : 'N/A';
         const dueDate = (document.getElementsByName("dueDate")[0].value) ? document.getElementsByName("dueDate")[0].value : 'No Due Date';
         const priority = document.getElementsByName("priority")[0].value;
         const project = document.getElementsByName("project")[0].value;

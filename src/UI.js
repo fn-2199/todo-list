@@ -34,6 +34,7 @@ export default function generateUI() {
     // Node References
     let tabsNodeList = [];
     let categoryNodeList = [];
+    let widgetNodeList = [];
     let addProjectNode;
     let taskContainerNode;
 
@@ -209,7 +210,7 @@ export default function generateUI() {
     // TASK BUTTON OPTIONS
     function editTask(id) {
         if (this.previousSibling.classList.contains('details-selected')) toggleDetails.call(this.previousSibling);
-        generateForm.call((taskArray.find((task) => task.id == id)));
+        generateForm.bind({title: 'Edit Task'})(taskArray.find((task) => task.id == id));
     }
 
     function deleteTask() {
@@ -243,7 +244,7 @@ export default function generateUI() {
     function closeModal() {modalBg.classList.remove("show-modal")};
 
     // Generate Form
-    function generateForm() {
+    function generateForm(task) {
         if (modalContainer.childElementCount == 2) {(modalContainer.firstChild.nextSibling).remove()};
         document.querySelector('.modal').classList.add('show-modal');
 
@@ -251,13 +252,12 @@ export default function generateUI() {
         const modalForm = document.createElement('form');
         modalForm.action = '#';
         modalForm.method = 'post';
-        modalForm.id = (this.id) ? "edittaskForm": (this.title.replace(/\s/g, '')).toLowerCase() + 'Form';
+        modalForm.id = (this.title.replace(/\s/g, '')).toLowerCase() + 'Form';
         const formTitle = document.createElement('h2');
-        formTitle.textContent = (this.id) ? "Edit Task" : this.title;
+        formTitle.textContent = this.title;
         modalForm.appendChild(formTitle);
 
         const formArray = (this.title == 'Add Project') ? newProject : newTaskArray;
-        let nodeList = [];
 
         // Generate Form Elements
         for (let widget of formArray) {
@@ -266,7 +266,7 @@ export default function generateUI() {
             label.textContent = widget.stringLabel;
             const element = document.createElement(`${widget.element}`);
             element.name = widget.camelCase;
-            nodeList.push(element);
+            widgetNodeList.push(element);
 
             switch (widget.element) {
                 case 'input':
@@ -298,24 +298,17 @@ export default function generateUI() {
             modalForm.appendChild(widgetContainer);
         }
 
-        
         // For Edit Task Form Only
-        let editTaskObject;
-
-        if (this.id) {
-            editTaskObject = this;
-            for (let node of nodeList) {
-                node.value = this[node.name]
-            }
-        }
+        if (this.title == 'Edit Task') {for (let node of widgetNodeList) {node.value = task[node.name]}}
 
         // Generate Buttons
         const buttons = document.createElement('div');
         buttons.classList.add('buttons');
-        [{type: 'button', text: 'Cancel'}, {type: 'submit', text: `${this.title}`}].forEach((btn) => {
+        [{type: 'button', text: 'Cancel'}, {type: 'submit', text: this.title}].forEach((btn) => {
             const button = document.createElement('button');
             button.type = btn.type;
-            button.textContent = (this.id && btn.type == 'submit') ? "Edit Task" : btn.text;
+            button.textContent = btn.text;
+            // Cancel Button Function
             if (btn.type == 'button') {button.onclick = closeModal};
             buttons.appendChild(button);
         });
@@ -323,7 +316,7 @@ export default function generateUI() {
         // Submit Button Function
         modalForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            (e.target.id == 'addprojectForm') ? addProject() : (e.target.id == 'addnewtaskForm') ? addNewTask.call(main) : updateTask.call(editTaskObject);
+            (e.target.id == 'addprojectForm') ? addProject() : (e.target.id == 'addnewtaskForm') ? addNewTask.call(main) : updateTask.call(task);
             closeModal();
         });
 

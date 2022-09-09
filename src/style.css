@@ -130,7 +130,6 @@ main h2 {
 }
 
 /* Project Tab */
-
 .delete{
     margin-left: auto;
     display: flex;
@@ -147,7 +146,7 @@ main h2 {
     visibility: visible;
 }
 
-/* MODALS */
+/* Modal */
 .modal {
     position: fixed;
     z-index: 1;
@@ -195,12 +194,7 @@ main h2 {
 }
 
 /* Modal Form */
-
 form input, select, textarea {
-    /* -webkit-transition: all 0.30s ease-in-out;
-    -moz-transition: all 0.30s ease-in-out;
-    -ms-transition: all 0.30s ease-in-out;
-    -o-transition: all 0.30s ease-in-out; */
     transition: all 0.30s ease-in-out;
     outline: none;
     padding: 3px 0px 3px 3px;
@@ -262,7 +256,6 @@ button[type='button'] {
 }
 
 /* Individual Task */
-
 .task-div {
     padding: 10px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;

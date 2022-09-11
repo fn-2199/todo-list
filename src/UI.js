@@ -1,9 +1,7 @@
 import './style.css';
-// import {projectsArray, taskObject, taskArray} from './logic';
 import {eachDayOfInterval, format, addDays} from 'date-fns';
 
 export default function generateUI() {
-
     let taskCounter = 0;
     let taskArray = []
     let projectsArray = ['Inbox'];

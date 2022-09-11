@@ -35,7 +35,7 @@ export default function generateUI() {
     const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsArray}];
 
     const headerArray = [pages('Menu', 'menu', toggleNav), pages('Add New Task', 'add', generateForm)];
-    const taskOptionArray = [pages('details-btn', 'read_more', toggleDetails), pages('edit-btn', 'edit', editTask), pages('delete-btn', 'delete', deleteTask)];
+    const taskOptionArray = [pages('details-btn', 'read_more', toggleDetails), pages('edit-btn', 'edit', openEditTaskModal), pages('delete-btn', 'delete', deleteTask)];
 
     // Modal Form Arrays
     const priorityArray = ['Low', 'Medium', 'High'];
@@ -127,13 +127,13 @@ export default function generateUI() {
     // Delete Function
     function deleteProject(e) {
         e.stopPropagation();
-
         // Remove logically
         const deletedTab = e.target.parentNode.previousSibling.textContent;
-        projectsArray.splice(projectsArray.indexOf(deletedTab), 1); // Removes from projectsArray
-        for (let i = 0; i < taskArray.length; i++) { //Removes all associated task
-            if (taskArray[i].project == deletedTab) {taskArray.splice(i, 1)}
-        }
+        projectsArray.splice(projectsArray.indexOf(deletedTab), 1);
+        // Update storage
+        localStorage.setItem("cachedProjectsArray", JSON.stringify(projectsArray));
+        // Removes all projects task
+        for (let i = 0; i < taskArray.length; i++) {if (taskArray[i].project == deletedTab) {taskArray.splice(i, 1)}};
         // Remove project display
         (tabsNodeList.find((tabNode) => tabNode == e.target.parentNode.parentNode)).remove();
         // Redirect to Today Tab
@@ -225,14 +225,17 @@ export default function generateUI() {
     }
 
     // TASK BUTTON OPTIONS
-    function editTask(id) {
+    function openEditTaskModal(id) {
         if (this.previousSibling.classList.contains('details-selected')) toggleDetails.call(this.previousSibling);
+        // Opens Edit Task Form
         generateForm.bind({title: 'Edit Task'})(taskArray.find((task) => task.id == id));
     }
 
     function deleteTask() {
         // Remove logically
         taskArray.splice(taskArray.findIndex((task) => task.id == this.parentNode.parentNode.id), 1);
+        // Update storage
+        localStorage.setItem("cachedTasks", JSON.stringify(taskArray));
         // Remove display
         (this.parentNode.parentNode).remove();
         // Display Message
@@ -333,7 +336,7 @@ export default function generateUI() {
         // Submit Button Function
         modalForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            (e.target.id == 'addprojectForm') ? addProject() : (e.target.id == 'addnewtaskForm') ? addNewTask.call(main) : updateTask.call(task);
+            (e.target.id == 'addprojectForm') ? addProject() : (e.target.id == 'addnewtaskForm') ? addNewTask() : updateTask.call(task);
             closeModal();
         });
 
@@ -342,9 +345,12 @@ export default function generateUI() {
     };
 
     function updateTask() {
+        // Sets new values
         for (let [key, value] of Object.entries(getFormValues())) {this[key] = value};
+        // Refreshes current page
         generatePage.call(currentActivePage);
-
+        // Update storage
+        localStorage.setItem("cachedTasks", JSON.stringify(taskArray));
     }
 
     function validateProjName() {
@@ -352,10 +358,12 @@ export default function generateUI() {
     }
 
     // Add Project Button Function
-    function addProject() {
-        const projectName = document.getElementsByName("projectName")[0].value;
+    function addProject(proj) {
+        let projectName = (proj) ? proj : document.getElementsByName("projectName")[0].value;
         // Append project logically
         projectsArray.push(projectName);
+        // Update storage
+        localStorage.setItem("cachedProjectsArray", JSON.stringify(projectsArray));
         // Display project UI
         displayTabs(categoryNodeList[1], [projectsArray[projectsArray.length - 1]]);
     }
@@ -371,22 +379,34 @@ export default function generateUI() {
     }
 
     // Add New Task Button Function
-    function addNewTask() {
-        let newTask = getFormValues();
-
+    function addNewTask(task) {
+        let newTask = (task) ? task : getFormValues();
         // Append task logically
         taskArray.push(taskObject(newTask.title, newTask.description, newTask.dueDate, newTask.priority, newTask.project));
+        // Update storage
+        localStorage.setItem("cachedTasks", JSON.stringify(taskArray));
 
-        if (newTask.project == this.firstChild.textContent) {
+        // Execute if new task's project is currently on display
+        if (newTask.project == currentActivePage) {
             // Remove Message
             if (taskContainerNode.textContent == noTaskMsg) taskContainerNode.textContent = '';
-             // Display task UI
+            // Display task UI
             displayTask(taskContainerNode, [taskArray[taskArray.length - 1]])
         };
     }
 
-    // Generate Main Tab
+    // Make Inbox tab the main page
     generatePage.call(homePagesArray[0]);
+
+    if (localStorage.cachedTasks) {
+        const savedTasks = JSON.parse(localStorage.getItem("cachedTasks"));
+        if (savedTasks) {savedTasks.forEach((task) => {addNewTask(task)})}
+    }
+
+    if (localStorage.cachedProjectsArray) {
+        const savedProjectsArray = JSON.parse(localStorage.getItem("cachedProjectsArray"));
+        for (let i = 1; i < savedProjectsArray.length; i++) {addProject(savedProjectsArray[i])}
+    }
     
     document.body.append(header, menu, main, modalBg);
 };

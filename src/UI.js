@@ -31,9 +31,9 @@ export default function generateUI() {
     }
 
     // Arrays
-    const homePagesArray = [pages('Inbox', 'inbox', generatePage), pages('Today', 'today', generatePage), pages('Upcoming', 'date_range', generatePage)];
-    let projectsPagesArray = [pages('Add Project', 'add', generateForm)];
-    const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsPagesArray}];
+    const homePagesArray = ['Inbox', 'Today', 'Upcoming'];
+    const CATEGORY = [{category: 'Home', subcategory: homePagesArray}, {category: 'Projects', subcategory: projectsArray}];
+
     const headerArray = [pages('Menu', 'menu', toggleNav), pages('Add New Task', 'add', generateForm)];
     const taskOptionArray = [pages('details-btn', 'read_more', toggleDetails), pages('edit-btn', 'edit', editTask), pages('delete-btn', 'delete', deleteTask)];
 
@@ -46,7 +46,6 @@ export default function generateUI() {
     let tabsNodeList = [];
     let categoryNodeList = [];
     let widgetNodeList = [];
-    let addProjectNode;
     let taskContainerNode;
 
     // Variables
@@ -83,25 +82,33 @@ export default function generateUI() {
         displayTabs(catContainer, cat.subcategory);
     })
 
+    // Generate Add Project Button
+    const addProjectObj = pages('Add Project', 'add', generateForm);
+    const addProjectBtn = document.createElement('button');
+    addProjectBtn.classList.add('add-project-btn');
+    addProjectBtn.textContent = addProjectObj.title;
+    addProjectBtn.onclick = addProjectObj.link.bind(addProjectObj);
+    menu.append(addProjectBtn);
+
     // Generate Side Tabs
     function displayTabs(nodeContainer, array) {
         for (let tab of array) {
+            if (nodeContainer == categoryNodeList[1] && tab == 'Inbox') continue; // Ignore Inbox from projectsArray
+
             const tabKey = document.createElement('li');
             tabKey.classList.add('tab');
             const tabName = document.createElement('p');
-            tabName.textContent = tab.title;
+            tabName.textContent = tab;
             const tabIcon = document.createElement('span');
             tabIcon.classList.add('material-icons-round');
-            tabIcon.textContent = tab.icon;
-            tabKey.onclick = tab.link.bind(tab);
+            tabIcon.textContent = (tab == 'Inbox') ? 'inbox' : (tab == 'Today') ? 'today' : (tab == 'Upcoming') ? 'date_range' : 'list';
+            tabKey.onclick = generatePage.bind(tab);
             tabKey.append(tabIcon, tabName);
+            tabsNodeList.push(tabKey);
 
-            (tab.icon == 'add') ? addProjectNode = tabKey : tabsNodeList.push(tabKey);
+            if (nodeContainer == categoryNodeList[1]) {createProjDeleteBtn(tabKey)};
 
-            if (nodeContainer.contains(addProjectNode)) {
-                createProjDeleteBtn(tabKey); 
-                nodeContainer.insertBefore(tabKey, addProjectNode);
-            } else {nodeContainer.appendChild(tabKey)};
+            nodeContainer.appendChild(tabKey);
         }
     }
 
@@ -124,7 +131,6 @@ export default function generateUI() {
         // Remove logically
         const deletedTab = e.target.parentNode.previousSibling.textContent;
         projectsArray.splice(projectsArray.indexOf(deletedTab), 1); // Removes from projectsArray
-        projectsPagesArray.splice(projectsPagesArray.findIndex((projectObj) => projectObj.title == deletedTab), 1); // Removes from projectsPagesArray
         for (let i = 0; i < taskArray.length; i++) { //Removes all associated task
             if (taskArray[i].project == deletedTab) {taskArray.splice(i, 1)}
         }
@@ -139,18 +145,18 @@ export default function generateUI() {
         currentActivePage = this;
 
         // Selected Tab Effect
-        for (let tab of tabsNodeList) (this.title == tab.firstChild.nextSibling.textContent) ? tab.classList.add('selected') : tab.classList.remove('selected');
+        for (let tab of tabsNodeList) (this == tab.firstChild.nextSibling.textContent) ? tab.classList.add('selected') : tab.classList.remove('selected');
         // Refresh Main Content
         main.textContent = '';
 
         const tabTitle = document.createElement('h2');
-        tabTitle.textContent = this.title;
+        tabTitle.textContent = this;
         const taskContainer = document.createElement('div');
         taskContainer.classList.add('task-container');
         taskContainerNode = taskContainer;
 
-        const pageTaskArray = (this.title == 'Today') ? taskArray.filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd')) :
-        (this.title == 'Upcoming') ? taskArray.filter((task) => sevenDaysArray.includes(task.dueDate)) : taskArray.filter((task) => task.project == this.title);
+        const pageTaskArray = (this == 'Today') ? taskArray.filter((task) => task.dueDate == format(new Date(), 'yyyy-MM-dd')) :
+        (this == 'Upcoming') ? taskArray.filter((task) => sevenDaysArray.includes(task.dueDate)) : taskArray.filter((task) => task.project == this);
 
         displayTask(taskContainer, pageTaskArray);
     
@@ -350,9 +356,8 @@ export default function generateUI() {
         const projectName = document.getElementsByName("projectName")[0].value;
         // Append project logically
         projectsArray.push(projectName);
-        projectsPagesArray.push(pages(projectName, 'list', generatePage));
         // Display project UI
-        displayTabs(categoryNodeList[1], [projectsPagesArray[projectsPagesArray.length - 1]]);
+        displayTabs(categoryNodeList[1], [projectsArray[projectsArray.length - 1]]);
     }
 
     function getFormValues() {

@@ -1,8 +1,19 @@
 import './style.css';
-import {projectsArray, taskObject, taskArray} from './logic';
+// import {projectsArray, taskObject, taskArray} from './logic';
 import {eachDayOfInterval, format, addDays} from 'date-fns';
 
 export default function generateUI() {
+
+    let taskCounter = 0;
+    let taskArray = []
+    let projectsArray = ['Inbox'];
+
+    const taskObject = (title, description, dueDate, priority, project) => {
+        let completed = false;
+        let id = taskCounter += 1;
+        return {completed, title, dueDate, priority, description, project, id};
+    }
+
     const pages = (title, icon, link) => {
         return {title, icon, link};
     }
